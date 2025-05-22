@@ -9,5 +9,6 @@ public class KacmRecommendationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KacmRecommendationApplication.class, args);
 	}
+	
 
 }

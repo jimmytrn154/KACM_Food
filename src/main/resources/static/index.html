@@ -1,0 +1,189 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Your CSS -->
+  <link rel="stylesheet" href="test.css" />
+
+  <title>Food Recommendation</title>
+</head>
+
+<body>
+  <nav class="sidebar">
+    <div class="logo">KACM</div>
+    <ul class="nav-list">
+      <li class="nav-item active">
+        <span class="material-icons">home</span>
+        <span class="text">Main</span>
+      </li>
+      <li class="nav-item">
+        <a href="/explore.html?tab=food" class="nav-link">
+          <span class="material-icons">explore</span>
+          <span class="text">Explore</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <span class="material-icons">video_library</span>
+        <span class="text">Feed</span>
+      </li>
+      <li class="nav-item">
+        <span class="material-icons">add_box</span>
+        <span class="text">Post</span>
+      </li>
+      <li class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="text">Profile</span>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <header class="header">
+      <h1>WHAT DO YOU WANNA EAT TODAY?</h1>
+      <div class="search-container">
+        <span class="material-icons search-icon"></span>
+        <input type="text" placeholder="Search for dishes, restaurants..." />
+      </div>
+    </header>
+
+    <section class="cards-section">
+      <div class="card-group featured">
+        <h2>Featured Dishes <a href="#">View More</a></h2>
+        <div class="cards-row" id="featured-container">
+          <!-- <div class="card">
+            <div class="card-img">
+              <img src="https://images2.thanhnien.vn/528068263637045248/2024/7/1/anh-man-hinh-2024-07-01-luc-113638-17198087615431007741437.png" alt="" >
+            </div>
+            <div class="card-body">
+              <h3>Com Tam</h3>
+              <p class="tags">#spicy #grilled</p>
+              <p class="rating">⭐ 4.5</p>
+              <p class="desc">Ngon so 1 Viet Nam!!.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img">
+              <img src="https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg" alt="">
+            </div>
+            <div class="card-body">
+              <h3>Bun dau mam tom</h3>
+              <p class="tags">#shrimppaste #fresh #tofu</p>
+              <p class="rating">⭐ 4.2</p>
+              <p class="desc">Mon ngon de nau tai nha rat ngon.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img">
+              <img src="https://nineshield.com.vn/wp-content/uploads/2024/03/com-chien-duong-chau-ngon.jpg" alt="">
+            </div>
+            <div class="card-body">
+              <h3>Com Chien Duong Chau</h3>
+              <p class="tags">#sweet #dessert</p>
+              <p class="rating">⭐ 4.8</p>
+              <p class="desc">Mon gay nghien den tu mien tay!.</p>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="card-group nearby">
+        <h2>Nearby Restaurants <a href="#">View More</a></h2>
+        <div class="cards-column">
+          <div class="card horizontal">
+            <div class="card-img-sm"></div>
+            <div class="card-body">
+              <h3>Restaurant Name</h3>
+              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
+            </div>
+          </div>
+          <div class="card horizontal">
+            <div class="card-img-sm"></div>
+            <div class="card-body">
+              <h3>Restaurant Name</h3>
+              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
+            </div>
+          </div>
+          <div class="card horizontal">
+            <div class="card-img-sm"></div>
+            <div class="card-body">
+              <h3>Restaurant Name</h3>
+              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="friends-section">
+      <h2>See your friends’ food! <a href="#">View More</a></h2>
+      <div class="feed">
+        <div class="feed-card">
+          <div class="feed-header">
+            <div class="avatar"></div>
+            <span class="friend-name">Friend Name</span>
+          </div>
+          <div class="feed-img"></div>
+        </div>
+        <div class="feed-card">
+          <div class="feed-header">
+            <div class="avatar"></div>
+            <span class="friend-name">Friend Name</span>
+          </div>
+          <div class="feed-img"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var s = document.createElement('script');
+      s.src = 'http://localhost:35729/livereload.js?snipver=1';
+      document.body.appendChild(s);
+    })();
+  </script>
+  <script>
+    // fetch & render featured dishes
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch('/api/featured')
+        .then(res => res.json())
+        .then(foods => {
+          const container = document.getElementById('featured-container');
+          foods.forEach(food => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            // ← add this click handler
+            card.onclick = () => {
+              window.location.href = `/explore.html?tab=food&id=${food.id}`;
+            };
+
+            card.innerHTML = `
+            <div class="card-img">
+              <img src="${food.imageUrl}" alt="${food.name}">
+            </div>
+            <div class="card-body">
+              <h3>${food.name}</h3>
+              <p class="tags">${food.tags.map(t => `#${t}`).join(' ')}</p>
+              <p class="rating">⭐ ${food.rating}</p>
+              <p class="desc">${food.description}</p>
+            </div>`;
+            container.appendChild(card);
+          });
+        })
+        .catch(console.error);
+    });
+  </script>
+</body>
+
+</html>

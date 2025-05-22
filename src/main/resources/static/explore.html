@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="explore.css" />
+    <link rel="stylesheet" href="/test.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>DishWasher • Explore</title>
+</head>
+
+<body>
+    <!-- reuse your sidebar/nav from index.html -->
+    <nav class="sidebar">
+        <div class="logo">KACM</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="material-icons">home</span>
+                    <span class="text">Main</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/explore.html?tab=food" class="nav-link">
+                    <span class="material-icons">explore</span>
+                    <span class="text">Explore</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">video_library</span>
+                <span class="text">Feed</span>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">add_box</span>
+                <span class="text">Post</span>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">person</span>
+                <span class="text">Profile</span>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <h1 class="exploreTitle">Explore</h1>
+            <div class="search-container">
+                <span class="material-icons search-icon">search</span>
+                <input id="search-input" type="text" placeholder="Search for your favorite dishes..." />
+            </div>
+            <div class="tabs">
+                <button data-tab="restaurant">Restaurant</button>
+                <button data-tab="food" class="active">Food</button>
+            </div>
+        </header>
+
+        <section id="content">
+            <!-- populated by JS -->
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const params = new URLSearchParams(location.search);
+            const tab = params.get('tab') || 'food';
+            const id = params.get('id');
+
+            document.querySelectorAll('.tabs button')
+                .forEach(b => {
+                    b.classList.toggle('active', b.dataset.tab === tab);
+                    b.onclick = () => location.href = `/explore.html?tab=${b.dataset.tab}`;
+                });
+
+            const content = document.getElementById('content');
+            const search = document.getElementById('search-input');
+
+            if (tab === 'food' && id) {
+                // DETAIL VIEW
+                fetch(`/api/dishes/${id}`)
+                    .then(res => res.json())
+                    .then(food => {
+                        content.innerHTML = `
+              <div class="detail-card">
+                <div class="detail-img"><img src="${food.imageUrl}" alt="${food.name}"></div>
+                <h2>${food.name}</h2>
+                <p>${food.description}</p>
+                <div class="detail-tags">${food.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+                <div class="meta-row">
+                  <div><span class="material-icons">schedule</span> Prep: ${food.prepTime}</div>
+                  <div><span class="material-icons">restaurant</span> Cook: ${food.cookTime}</div>
+                  <div><span class="material-icons">whatshot</span> Difficulty: ${food.difficulty}</div>
+                  <div><span class="material-icons">people</span> Serves: ${food.servings}</div>
+                </div>
+                <h3>Ingredients</h3>
+                <ul>${food.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+                <h3>Instructions</h3>
+                <ol>${food.instructions.map(i => `<li>${i}</li>`).join('')}</ol>
+                <h3>Nutrition Information</h3>
+                <div class="nutrition-grid">
+                  <div><strong>Calories:</strong> ${food.nutrition.calories}</div>
+                  <div><strong>Protein:</strong> ${food.nutrition.protein}</div>
+                  <div><strong>Carbs:</strong> ${food.nutrition.carbs}</div>
+                  <div><strong>Fat:</strong> ${food.nutrition.fat}</div>
+                </div>
+              </div>`;
+                    });
+            } else if (tab === 'food') {
+                // GRID VIEW
+                fetch('/api/dishes')
+                    .then(res => res.json())
+                    .then(all => {
+                        let dishes = all;
+                        const renderGrid = () => {
+                            content.innerHTML = `
+                <div class="filter-row">
+                  ${['All', 'Savory', 'Meaty', 'Italian', 'Vegetarian', 'Alcoholic', 'Vietnamese']
+                                    .map(t => `<button class="filter-btn">${t}</button>`).join('')}
+                </div>
+                <div class="cards-row" id="food-grid"></div>`;
+
+                            document.querySelectorAll('.filter-btn').forEach(btn => {
+                                btn.onclick = () => {
+                                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                                    btn.classList.add('active');
+                                    const tag = btn.textContent;
+                                    dishes = tag === 'All'
+                                        ? all
+                                        : all.filter(f => f.tags.includes(tag.toLowerCase()));
+                                    drawCards(dishes);
+                                };
+                            });
+                            search.oninput = () => {
+                                const q = search.value.toLowerCase();
+                                drawCards(dishes.filter(f =>
+                                    f.name.toLowerCase().includes(q) ||
+                                    f.tags.some(t => t.includes(q))
+                                ));
+                            };
+                            // initial
+                            document.querySelector('.filter-btn').classList.add('active');
+                            drawCards(dishes);
+                        };
+                        const drawCards = list => {
+                            document.getElementById('food-grid').innerHTML =
+                                list.map(f => `
+                  <div class="card" onclick="location.href='/explore.html?tab=food&id=${f.id}'">
+                    <div class="card-img"><img src="${f.imageUrl}" alt="${f.name}"></div>
+                    <div class="card-body">
+                      <h3>${f.name}</h3>
+                      <p class="desc">${f.description}</p>
+                      <p class="rating">⭐ ${f.rating}</p>
+                    </div>
+                  </div>
+                `).join('');
+                        };
+                        renderGrid();
+                    });
+            } else {
+                // restaurant tab not yet implemented
+                content.innerHTML = '<p>Restaurant view coming soon…</p>';
+            }
+        })();
+    </script>
+</body>
+
+</html>
