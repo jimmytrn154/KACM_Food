@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Food Restrictions Setup</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.1);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .checkbox-group {
+      margin-top: 10px;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #218838;
+    }
+
+    .tag-checkbox {
+      display: inline-block;
+      margin: 6px 8px 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<form action="/restriction/dislikefl" method = "post">
+
+  <div class="container">
+    <h1>Personalize Your Food Preferences</h1>
+
+    <!-- 1. Disliked Flavors -->
+     
+
+        <h2>Disliked Flavors</h2>
+        <div class="checkbox-group">
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="spicy"> Spicy</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="bitter"> Bitter</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sour"> Sour</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sweet"> Too Sweet</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="oily"> Oily</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="pungent"> Pungent</label>
+        </div>
+
+    <!-- 2. Food Allergies -->
+    <h2>Food Allergies</h2>
+    <label for="allergies">Enter foods you're allergic to (comma-separated):</label>
+    <input type="text" id="allergies" name="food_allergy_raw" placeholder="e.g. peanuts, shrimp, milk">
+
+    <!-- 3. Dietary Preferences -->
+    <h2>Dietary Preferences</h2>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
+      <label><input type="checkbox" name="diet" value="vegan"> Vegan</label>
+      <label><input type="checkbox" name="diet" value="pescatarian"> Pescatarian</label>
+      <label><input type="checkbox" name="diet" value="halal"> Halal</label>
+      <label><input type="checkbox" name="diet" value="gluten-free"> Gluten-Free</label>
+      <label><input type="checkbox" name="diet" value="keto"> Keto</label>
+      <label><input type="checkbox" name="diet" value="low-carb"> Low Carb</label>
+      <label><input type="checkbox" name="diet" value="no-restrictions"> No Restrictions</label>
+    </div>
+
+    <h2>Preferred Cuisines</h2>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Vietnamese"> Vietnamese</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Japanese"> Japanese</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Korean"> Korean</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Italian"> Italian</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Indian"> Indian</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Mexican"> Mexican</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Thai"> Thai</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="Middle Eastern"> Middle Eastern</label>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()">Submit</button>
+  </div>
+</form>
+
+  <script>
+    function submitForm() {
+      const flavors = [...document.querySelectorAll('input[name="flavors"]:checked')].map(el => el.value);
+      const allergies = document.getElementById('allergies').value;
+      const diet = [...document.querySelectorAll('input[name="diet"]:checked')].map(el => el.value);
+
+      const result = {
+        dislikedFlavors: flavors,
+        foodAllergies: allergies.split(',').map(a => a.trim()),
+        dietaryPreferences: diet
+      };
+    }
+  </script>
+
+</body>
+</html>
