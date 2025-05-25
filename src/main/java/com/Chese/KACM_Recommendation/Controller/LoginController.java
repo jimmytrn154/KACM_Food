@@ -1,11 +1,15 @@
 package com.Chese.KACM_Recommendation.Controller;
 
 import com.Chese.KACM_Recommendation.entities.Login;
+
+import jakarta.servlet.http.HttpSession;
+
 import com.Chese.KACM_Recommendation.Service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class LoginController {
@@ -24,10 +28,12 @@ public class LoginController {
 
     @PostMapping("/login") // @PostMapping("/login") ánh xạ yêu cầu POST tới URL /login đến phương thức processLogin.
     // Mục đích: Xử lý dữ liệu được gửi từ form (ví dụ: xử lý thông tin đăng nhập khi người dùng nhấn nút "Đăng nhập").
-    public String processLogin(@ModelAttribute("login") Login login, Model model) {
+    public String processLogin(@ModelAttribute("login") Login login, Model model, HttpSession session) {
         // @ModelAttribute("login") Login login lấy dữ liệu từ form (tên người dùng, mật khẩu) và gán vào đối tượng login.
         // Mục đích: Giúp lấy dữ liệu người dùng nhập từ giao diện và sử dụng trong phương thức xử lý.
         if (loginService.authenticate(login.getUsername(), login.getPassword())) {
+            // ← establish login
+            session.setAttribute("user", login.getUsername());
             return "redirect:/restriction";
             // Trong Spring MVC, return "redirect:/welcome"; không trả về một View (như return "login";) mà thay vào đó yêu cầu Spring thực hiện một HTTP redirect (chuyển hướng) tới URL /welcome.
         } else {

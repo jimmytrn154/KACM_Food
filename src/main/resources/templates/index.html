@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- Your CSS -->
-  <link rel="stylesheet" href="test.css" />
+  <link rel="stylesheet" th:href="@{/test.css}" />
 
   <title>Food Recommendation</title>
 </head>
@@ -23,11 +23,13 @@
     <div class="logo">KACM</div>
     <ul class="nav-list">
       <li class="nav-item active">
-        <span class="material-icons">home</span>
-        <span class="text">Main</span>
+        <a th:href="@{/}" class="nav-link">
+          <span class="material-icons">home</span>
+          <span class="text">Main</span>
+        </a>
       </li>
       <li class="nav-item">
-        <a href="/explore.html?tab=food" class="nav-link">
+        <a th:href="@{/explore(tab='food')}" class="nav-link">
           <span class="material-icons">explore</span>
           <span class="text">Explore</span>
         </a>
@@ -58,7 +60,7 @@
 
     <section class="cards-section">
       <div class="card-group featured">
-        <h2>Featured Dishes <a href="/explore.html?tab=food">View More</a></h2>
+        <h2>Featured Dishes <a th:href="@{/explore(tab='food')}">View More</a></h2>
         <div class="cards-row" id="featured-container">
           <!-- <div class="card">
             <div class="card-img">
@@ -165,7 +167,7 @@
 
             // ← add this click handler
             card.onclick = () => {
-              window.location.href = `/explore.html?tab=food&id=${food.id}`;
+              window.location.href = `/explore?tab=food&id=${food.id}`;
             };
 
             card.innerHTML = `
