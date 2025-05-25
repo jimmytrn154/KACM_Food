@@ -14,6 +14,16 @@ public class FoodService {
     @PostConstruct
     public void init() {
         // Example entries (fill out f2, f3 similarly)        
+        
+        foodMap.put("f5", new FoodDetail(
+            "f5", "Com Chien duong chau", "https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg",
+            List.of("spicy","grilled"), 4.5,
+            "Tender meat with chili glaze.",
+            "15 minutes", "25 minutes", "Medium", "4 people",
+            List.of("8 oz pasta", "2 chicken breasts", "1 tbsp chili flakes"),
+            List.of("Cook pasta al dente.", "Season chicken and grill.", "Toss together."),
+            new Nutrition("520 kcal","28g","42g","26g")
+        ));
         foodMap.put("f1", new FoodDetail(
             "f1", "Spicy Grill", "https://images2.thanhnien.vn/528068263637045248/2024/7/1/anh-man-hinh-2024-07-01-luc-113638-17198087615431007741437.png",
             List.of("spicy","grilled"), 4.5,
@@ -43,15 +53,6 @@ public class FoodService {
         ));
         foodMap.put("f4", new FoodDetail(
             "f4", "Bun bo Hue", "https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg",
-            List.of("spicy","grilled"), 4.5,
-            "Tender meat with chili glaze.",
-            "15 minutes", "25 minutes", "Medium", "4 people",
-            List.of("8 oz pasta", "2 chicken breasts", "1 tbsp chili flakes"),
-            List.of("Cook pasta al dente.", "Season chicken and grill.", "Toss together."),
-            new Nutrition("520 kcal","28g","42g","26g")
-        ));
-        foodMap.put("f5", new FoodDetail(
-            "f5", "Com Chien duong chau", "https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg",
             List.of("spicy","grilled"), 4.5,
             "Tender meat with chili glaze.",
             "15 minutes", "25 minutes", "Medium", "4 people",

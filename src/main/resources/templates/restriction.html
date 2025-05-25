@@ -83,23 +83,24 @@
      
 
         <h2>Disliked Flavors</h2>
-        <div class="checkbox-group">
+        <div class="checkbox-group" id="group-flavors">
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="spicy"> Spicy</label>
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="bitter"> Bitter</label>
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sour"> Sour</label>
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sweet"> Too Sweet</label>
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="oily"> Oily</label>
         <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="pungent"> Pungent</label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="no-restrictions"> No Restrictions</label>
         </div>
 
     <!-- 2. Food Allergies -->
     <h2>Food Allergies</h2>
-    <label for="allergies">Enter foods you're allergic to (comma-separated):</label>
-    <input type="text" id="allergies" name="food_allergy_raw" placeholder="e.g. peanuts, shrimp, milk">
+    <label for="allergies">Enter foods you're allergic to (comma-separated, "No" For No Restrictions):</label>
+    <input type="text" id="allergies" name="food_allergy_raw" placeholder="e.g. peanuts, shrimp, milk" required>
 
     <!-- 3. Dietary Preferences -->
     <h2>Dietary Preferences</h2>
-    <div class="checkbox-group">
+    <div class="checkbox-group" id="group-diet">
       <label><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
       <label><input type="checkbox" name="diet" value="vegan"> Vegan</label>
       <label><input type="checkbox" name="diet" value="pescatarian"> Pescatarian</label>
@@ -111,7 +112,7 @@
     </div>
 
     <h2>Preferred Cuisines</h2>
-    <div class="checkbox-group">
+    <div class="checkbox-group" id="group-cuisine">
       <label><input type="checkbox" name="Preferred_Cuisines" value="Vietnamese"> Vietnamese</label>
       <label><input type="checkbox" name="Preferred_Cuisines" value="Japanese"> Japanese</label>
       <label><input type="checkbox" name="Preferred_Cuisines" value="Korean"> Korean</label>
@@ -120,25 +121,65 @@
       <label><input type="checkbox" name="Preferred_Cuisines" value="Mexican"> Mexican</label>
       <label><input type="checkbox" name="Preferred_Cuisines" value="Thai"> Thai</label>
       <label><input type="checkbox" name="Preferred_Cuisines" value="Middle Eastern"> Middle Eastern</label>
+      <label><input type="checkbox" name="Preferred_Cuisines" value="no-restrictions"> No Restrictions3</label>
     </div>
 
     <button class="submit-btn" onclick="submitForm()">Submit</button>
   </div>
 </form>
 
-  <script>
-    function submitForm() {
-      const flavors = [...document.querySelectorAll('input[name="flavors"]:checked')].map(el => el.value);
-      const allergies = document.getElementById('allergies').value;
-      const diet = [...document.querySelectorAll('input[name="diet"]:checked')].map(el => el.value);
+<script>
+  function submitForm(e) {
+    // Lấy dữ liệu
+    const flavors = [...document.querySelectorAll('input[name="hate_taste_adjectives"]:checked')].map(el => el.value);
+    const allergies = document.getElementById('allergies').value.trim();
+    const diet = [...document.querySelectorAll('input[name="diet"]:checked')].map(el => el.value);
+    const cuisines = [...document.querySelectorAll('input[name="Preferred_Cuisines"]:checked')].map(el => el.value);
 
-      const result = {
-        dislikedFlavors: flavors,
-        foodAllergies: allergies.split(',').map(a => a.trim()),
-        dietaryPreferences: diet
-      };
+    // Validation
+    const errors = [];
+
+    if (flavors.length === 0) {
+      errors.push("Please select at least one disliked flavor.");
     }
-  </script>
+
+    if (!allergies) {
+      errors.push("Please enter food allergies (type 'No' if none).");
+    }
+
+    if (diet.length === 0) {
+      errors.push("Please select at least one dietary preference.");
+    }
+
+    if (cuisines.length === 0) {
+      errors.push("Please select at least one preferred cuisine.");
+    }
+
+    // Nếu có lỗi, dừng lại
+    if (errors.length > 0) {
+      if (e) e.preventDefault(); // Nếu được gọi từ event submit
+      alert(errors.join('\n'));
+      return false;
+    }
+
+    // Tạo object nếu hợp lệ
+    const result = {
+      dislikedFlavors: flavors,
+      foodAllergies: allergies.split(',').map(a => a.trim()),
+      dietaryPreferences: diet,
+      preferredCuisines: cuisines
+    };
+
+    console.log("Form data:", result);
+    return true;
+  }
+
+  // Nếu dùng submit thông qua <form onsubmit>
+  document.querySelector('form').addEventListener('submit', function (e) {
+    submitForm(e); // Gọi kiểm tra trước khi cho submit
+  });
+</script>
+
 
 </body>
 </html>
