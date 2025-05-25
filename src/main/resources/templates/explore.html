@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="stylesheet" href="explore.css" />
-    <link rel="stylesheet" href="/test.css" />
+    <link rel="stylesheet" th:href="@{/test.css}" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <title>DishWasher • Explore</title>
@@ -23,7 +23,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/explore.html?tab=food" class="nav-link">
+                <a th:href="@{/explore(tab='food')}" class="nav-link">
                     <span class="material-icons">explore</span>
                     <span class="text">Explore</span>
                 </a>
@@ -70,7 +70,7 @@
             document.querySelectorAll('.tabs button')
                 .forEach(b => {
                     b.classList.toggle('active', b.dataset.tab === tab);
-                    b.onclick = () => location.href = `/explore.html?tab=${b.dataset.tab}`;
+                    b.onclick = () => location.href = `/explore?tab=${b.dataset.tab}`;
                 });
 
             const content = document.getElementById('content');
@@ -145,7 +145,7 @@
                         const drawCards = list => {
                             document.getElementById('food-grid').innerHTML =
                                 list.map(f => `
-                  <div class="card" onclick="location.href='/explore.html?tab=food&id=${f.id}'">
+                  <div class="card" onclick="location.href='/explore?tab=food&id=${f.id}'">
                     <div class="card-img"><img src="${f.imageUrl}" alt="${f.name}"></div>
                     <div class="card-body">
                       <h3>${f.name}</h3>
