@@ -14,6 +14,11 @@
 
   <!-- Your CSS -->
   <link rel="stylesheet" th:href="@{/test.css}" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+
+
 
   <title>Food Recommendation</title>
 </head>
@@ -126,6 +131,17 @@
       </div>
     </section>
 
+    <!-- **ADDED: Routing Map Section** -->
+    <section>
+      <h3>Route to Restaurant</h3>
+      <ul id="restaurantList">
+        <li data-key="Pho24">Pho 24</li>
+        <li data-key="BunChaHaNoi">Bún Chả Hà Nội</li>
+        <li data-key="ComTam">Cơm Tấm Sài Gòn</li>
+      </ul>
+      <div id="map" style="height: 500px; margin-top: 1rem;"></div>
+    </section>
+
     <section class="friends-section">
       <h2>See your friends’ food! <a href="#">View More</a></h2>
       <div class="feed">
@@ -186,6 +202,10 @@
         .catch(console.error);
     });
   </script>
+  <!-- **ADDED: Leaflet & Routing Machine scripts + your routing logic** -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <script th:src="@{/js/app.js}"></script>
 </body>
 
 </html>
