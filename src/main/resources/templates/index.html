@@ -17,8 +17,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
-
-
+  <!-- **ADDED: Leaflet & Routing Machine CSS** -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
   <title>Food Recommendation</title>
 </head>
@@ -67,66 +68,14 @@
       <div class="card-group featured">
         <h2>Featured Dishes <a th:href="@{/explore(tab='food')}">View More</a></h2>
         <div class="cards-row" id="featured-container">
-          <!-- <div class="card">
-            <div class="card-img">
-              <img src="https://images2.thanhnien.vn/528068263637045248/2024/7/1/anh-man-hinh-2024-07-01-luc-113638-17198087615431007741437.png" alt="" >
-            </div>
-            <div class="card-body">
-              <h3>Com Tam</h3>
-              <p class="tags">#spicy #grilled</p>
-              <p class="rating">⭐ 4.5</p>
-              <p class="desc">Ngon so 1 Viet Nam!!.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-img">
-              <img src="https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg" alt="">
-            </div>
-            <div class="card-body">
-              <h3>Bun dau mam tom</h3>
-              <p class="tags">#shrimppaste #fresh #tofu</p>
-              <p class="rating">⭐ 4.2</p>
-              <p class="desc">Mon ngon de nau tai nha rat ngon.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-img">
-              <img src="https://nineshield.com.vn/wp-content/uploads/2024/03/com-chien-duong-chau-ngon.jpg" alt="">
-            </div>
-            <div class="card-body">
-              <h3>Com Chien Duong Chau</h3>
-              <p class="tags">#sweet #dessert</p>
-              <p class="rating">⭐ 4.8</p>
-              <p class="desc">Mon gay nghien den tu mien tay!.</p>
-            </div>
-          </div> -->
+          <!-- your existing featured cards -->
         </div>
       </div>
 
       <div class="card-group nearby">
         <h2>Nearby Restaurants <a href="#">View More</a></h2>
         <div class="cards-column">
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
-          </div>
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
-          </div>
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
-          </div>
+          <!-- your existing nearby cards -->
         </div>
       </div>
     </section>
