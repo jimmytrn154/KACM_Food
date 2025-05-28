@@ -87,6 +87,7 @@ body {
   max-width: 1200px;
   transition: margin-left 0.3s; 
   padding: 2rem 1rem;
+  padding-left: 100px;
 }
 .sidebar:hover ~ .main-content {
   margin-left: 200px;
@@ -272,4 +273,8 @@ body {
 @media (max-width: 768px) {
   .sidebar { display: none; }
   .main-content { margin-left: 0; }
+}
+
+.map {
+  padding-left: 100px;
 }
