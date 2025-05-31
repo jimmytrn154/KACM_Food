@@ -1,7 +1,6 @@
 package com.Chese.KACM_Recommendation.Service;
 
 import com.Chese.KACM_Recommendation.algorithms.Dijkstra;
-import com.Chese.KACM_Recommendation.Config.LocationHashTable;
 
 import org.apache.http.client.utils.URIBuilder;
 import java.io.BufferedReader;

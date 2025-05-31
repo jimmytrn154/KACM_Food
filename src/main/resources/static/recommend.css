@@ -1,0 +1,309 @@
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    margin: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.filter-bar label {
+    font-weight: 600;
+}
+
+.filter-bar select,
+.filter-bar button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.filter-bar button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-bar button:hover {
+    background-color: #45a049;
+}
+/* explore.css */
+
+/* 0) SIDEBAR (from test.css) */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    transition: width 0.3s;               /* smooth sidebar expand/collapse :contentReference[oaicite:0]{index=0} */
+    overflow: hidden;
+  }
+  .sidebar:hover {
+    width: 200px;
+  }
+  .sidebar .logo {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--red);
+    text-align: center;
+    padding: 1rem 0;
+  }
+  .nav-list { list-style: none; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-item .material-icons {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  .nav-item .text {
+    margin-left: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .sidebar:hover .nav-item .text {
+    opacity: 1;
+  }
+  .nav-item.active {
+    background: var(--yellow);
+  }
+  .nav-item.active .material-icons {
+    color: var(--green);
+  }
+  .sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+  .sidebar .nav-link:hover {
+    text-decoration: none;
+  }
+  
+  /* 1) Root & Global Resets */
+  :root {
+    --red:    #f10100;
+    --green:  #476e00;
+    --yellow: #ffd122;
+    --cream:  #f1e1c8;
+    --gold:   #d8d86b;
+    --font:   "Poppins", sans-serif;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: var(--font);
+    background: #fafafa;
+  }
+  
+  /* 2) Main content container */
+  /* replicate test.css’s smooth margin-left transition :contentReference[oaicite:1]{index=1} */
+  .main-content {
+    margin-left: 80px;
+    margin-right: auto;          /* center on the right without overriding margin-left */
+    max-width: 1200px;
+    transition: margin-left 0.3s; 
+    padding: 2rem 1rem;
+  }
+  .sidebar:hover ~ .main-content {
+    margin-left: 200px;
+  }
+  
+  /* 3) Header & Search */
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .search-container .search-icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.5rem;
+    color: #666;
+  }
+  .search-container input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 3rem;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /* 4) Tabs */
+  .tabs {
+    display: inline-flex;
+    background: var(--cream);
+    border-radius: 30px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .tabs button {
+    background: none;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .tabs button.active {
+    background: var(--yellow);
+    color: var(--green);
+  }
+  
+  /* 5) Filter pills */
+  .filter-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .filter-btn {
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    background: var(--cream);
+    color: var(--green);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .filter-btn.active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+  
+  /* 6) Grid layout */
+  #food-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    #food-grid { grid-template-columns: 1fr; }
+  }
+  
+  /* 7) Cards */
+  #food-grid .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  #food-grid .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  }
+  .card-img {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 ratio */
+    overflow: hidden;
+  }
+  .card-img img {
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    object-fit: cover;
+  }
+  .card-body {
+    padding: 1rem;
+  }
+  .card-body h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .card-body .desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  .card-body .rating {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gold);
+  }
+  
+  /* 8) Detail view */
+  .detail-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-top: 1.5rem;
+  }
+  .detail-img {
+    width: 100%;
+    padding-top: 50%;
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .detail-img img {
+    position: absolute; top:0; left:0;
+    width:100%; height:100%;
+    object-fit: cover;
+  }
+  .detail-card h2 { font-size: 1.8rem; margin-bottom: 0.75rem; }
+  .detail-card h3 {
+    font-size: 1.2rem;
+    margin-top: 1.25rem; margin-bottom: 0.5rem;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 1.5rem;
+    color: #444; margin-bottom: 1.5rem;
+  }
+  .meta-row div {
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .meta-row .material-icons { font-size: 1.2rem; color: var(--green); }
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  /* 9) Responsive */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+  }
+  

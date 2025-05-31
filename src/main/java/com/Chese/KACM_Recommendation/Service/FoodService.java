@@ -1,5 +1,4 @@
 package com.Chese.KACM_Recommendation.Service;
-import com.Chese.KACM_Recommendation.model.Food;
 import org.springframework.stereotype.Service;
 import com.Chese.KACM_Recommendation.model.FoodDetail;
 import com.Chese.KACM_Recommendation.model.FoodSummary;

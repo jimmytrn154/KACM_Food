@@ -1,5 +1,4 @@
 package com.Chese.KACM_Recommendation.Config;
-import com.Chese.KACM_Recommendation.Config.LocationHashTable;
 import com.Chese.KACM_Recommendation.model.LocationCoordinate;
 import java.util.HashMap;
 import java.util.Map;

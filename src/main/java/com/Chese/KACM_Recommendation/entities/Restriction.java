@@ -7,7 +7,6 @@ public class Restriction {
     private List<String> hate_taste_adjectives;
     private List<String> food_allergy; 
     private List<String> diet; 
-    private String food_allergy_raw;
     private List<String> Preferred_Cuisines;
 
     public Restriction(){

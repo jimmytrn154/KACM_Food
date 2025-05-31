@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/recommend.css}" />
+    <!-- <link rel="stylesheet" th:href="@{/test.css}" /> -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>Food Recommendation</title>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo">KACM</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <span class="material-icons">home</span>
+                    <span class="text">Main</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/explore(tab='food')}" class="nav-link">
+                    <span class="material-icons">explore</span>
+                    <span class="text">Explore</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/recommend}" class="nav-link">
+                    <span class="material-icons">emoji_food_beverage</span>
+                    <span class="text">Recommend</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">video_library</span>
+                <span class="text">Feed</span>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">add_box</span>
+                <span class="text">Post</span>
+            </li>
+            <li class="nav-item">
+                <span class="material-icons">person</span>
+                <span class="text">Profile</span>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="filter-bar">
+                <label for="filter-priority">Filter by priority:</label>
+                <select id="filter-priority" name="filter-priority">
+                    <option value="diet">Diet</option>
+                    <option value="preferred_cuisines">Preferred Cuisines</option>
+                </select>
+                <button id="suggest-btn">Suggest</button>
+            </div>            
+        </header>
+
+        <section id="content">
+            <!-- populated by JS -->
+        </section>
+    </main>    
+</body>
