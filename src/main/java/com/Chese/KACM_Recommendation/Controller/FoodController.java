@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Chese.KACM_Recommendation.Service.FoodService;
-import com.Chese.KACM_Recommendation.model.Food;
 import java.util.*;
 
 @RestController
