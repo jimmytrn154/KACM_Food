@@ -8,6 +8,7 @@ public class FoodSummary {
     private List<String> tags;
     private double rating;
     private String description;
+    private Integer score;
 
     public FoodSummary() { }
 
@@ -23,6 +24,7 @@ public class FoodSummary {
         this.tags = tags;
         this.rating = rating;
         this.description = description;
+        this.score = 0;
     }
 
     public String getId() { return id; }
@@ -31,4 +33,6 @@ public class FoodSummary {
     public List<String> getTags() { return tags; }
     public double getRating() { return rating; }
     public String getDescription() { return description; }
+    public Integer getScore() { return score; }
+    public void setScore(Integer score) { this.score = score; }
 }
