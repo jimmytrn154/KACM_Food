@@ -140,6 +140,10 @@ public class FoodService {
         return new ArrayList<>(foodMap.values());
     }
 
+    public List<FoodDetail> getDetail() {
+        return new ArrayList<>(foodMap.values());
+    }
+
     /** detail by id */
     public Optional<FoodDetail> getById(String id) {
         return Optional.ofNullable(foodMap.get(id));

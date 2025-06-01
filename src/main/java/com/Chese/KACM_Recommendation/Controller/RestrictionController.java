@@ -29,6 +29,7 @@ public class RestrictionController {
         System.out.println(restriction.getfood_allergy());
         System.out.println(restriction.getdiet());
         System.out.println(restriction.getPreferred_Cuisines());
+        session.setAttribute("restriction", restriction);
         return "redirect:/";
     }
 }
