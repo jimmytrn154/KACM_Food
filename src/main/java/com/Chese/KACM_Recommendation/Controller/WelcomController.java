@@ -7,11 +7,25 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class WelcomController {
 
-    @GetMapping({"/", "/index"})
-    public String indexPage(HttpSession session) {
-        if (session.getAttribute("user") == null) {
-            return "redirect:/login";
+    /**
+     * Handles requests to the root URL ("/").
+     * This is the public landing page.
+     */
+    @GetMapping("/")
+    public String showLandingPage() {
+        return "landingPage"; // Renders templates/landingPage.html
     }
-    return "index"; // renders templates/index.html
-  }
+
+    /**
+     * Handles requests to the protected "/index" URL.
+     * Redirects to /login if the user is not authenticated.
+     */
+    @GetMapping("/index")
+    public String showIndexPage(HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            // This redirect correctly points to the route handled by your LoginController
+            return "redirect:/login";
+        }
+        return "index"; // Renders templates/index.html for logged-in users
+    }
 }
