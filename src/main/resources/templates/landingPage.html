@@ -717,8 +717,9 @@
                     </div>
                     <!-- Team Member 2 -->
                     <div class="team-card fade-in" style="transition-delay: 0.1s;" data-name="Chun Tran"
-                        data-role="Full-stack" data-img="/images/chunn.jpg"
-                        data-bio="The architect of the KACM platform, Chun brings years of software engineering experience to the table. They are responsible for the powerful AI engine and ensuring the app runs smoothly and efficiently.">
+                        data-role="Full-stack" data-img="/images/chunn.jpg" 
+                        data-bio="The architect of the KACM platform, Chun brings years of software engineering experience to the table. They are responsible for the powerful AI engine and ensuring the app runs smoothly and efficiently."
+                        data-gh="https://github.com/jimmytrn154">
                         <img th:src="@{/images/chunn.jpg}" alt="Team Member 2" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Chun Tran</h3>
@@ -789,7 +790,7 @@
             <div class="modal-social">
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
+                <a class="gh" href="#" target="_blank"><i class="fab fa-github"></i></a>
             </div>
         </div>
     </div>
@@ -829,6 +830,7 @@
         const modalRole = modal.querySelector('.role');
         const modalImage = modal.querySelector('.modal-image');
         const modalBio = modal.querySelector('.bio');
+        const modalGH = modal.querySelector('.gh'); //modal for github
 
         // --- Team Modal Logic ---
         const openModal = (card) => {
@@ -839,6 +841,7 @@
             modalName.textContent = card.dataset.name;
             modalRole.textContent = card.dataset.role;
             modalBio.textContent = card.dataset.bio;
+            modalGH.href = card.dataset.gh;
 
             modal.classList.add('active');
             document.body.classList.add('modal-open');
