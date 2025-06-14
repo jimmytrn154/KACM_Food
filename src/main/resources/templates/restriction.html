@@ -1,185 +1,406 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Food Restrictions Setup</title>
+  <title>Personalize Your Preferences</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      --red:    #f10100;
+      --green:  #476e00;
+      --yellow: #ffd122;
+      --cream:  #f1e1c8;
+      --gold:   #d8d86b;
+      --dark-text: #333;
+      --font:   "Poppins", sans-serif;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f7fa;
+      font-family: var(--font);
+      background-color: var(--cream);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       padding: 40px;
     }
 
-    .container {
-      max-width: 600px;
-      margin: auto;
+    .wizard-container {
+      width: 100%;
+      max-width: 650px;
       background-color: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
-    h2 {
-      margin-top: 30px;
-      margin-bottom: 15px;
-      color: #333;
-      font-size: 22px;
-    }
-
-    label {
-      display: block;
+    h1 {
+      text-align: center;
+      color: var(--dark-text);
+      font-weight: 700;
       margin-bottom: 10px;
-      font-size: 16px;
+    }
+    
+    .wizard-intro {
+      text-align: center;
+      color: #777;
+      margin-bottom: 30px;
     }
 
-    input[type="checkbox"] {
-      margin-right: 10px;
-      transform: scale(1.1);
+    /* --- Progress Bar --- */
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      height: 4px;
+      width: 100%;
+      background-color: #e0e0e0;
+      z-index: 1;
+    }
+    .progress-bar .progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      height: 4px;
+      background-color: var(--green);
+      z-index: 2;
+      transition: width 0.4s ease;
+    }
+    .progress-step {
+      width: 30px;
+      height: 30px;
+      background-color: #e0e0e0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      color: #fff;
+      z-index: 3;
+      transition: background-color 0.4s ease;
+    }
+    .progress-step.active {
+      background-color: var(--green);
+    }
+    
+    /* --- Wizard Steps --- */
+    .wizard-step {
+      display: none;
+    }
+    .wizard-step.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .wizard-step h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 15px;
+    }
+    
+    /* --- Custom Tag-Style Checkboxes --- */
+    .tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .tag-checkbox input[type="checkbox"] {
+      display: none; /* Hide the default checkbox */
+    }
+    .tag-checkbox span {
+      display: block;
+      padding: 10px 20px;
+      border: 2px solid #ddd;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .tag-checkbox input[type="checkbox"]:checked + span {
+      background-color: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+    .tag-checkbox input[type="checkbox"]:disabled + span {
+      background-color: #f5f5f5;
+      color: #aaa;
+      border-color: #e0e0e0;
+      cursor: not-allowed;
+    }
+    .tag-checkbox:hover span {
+      border-color: var(--green);
     }
 
+    /* --- Allergy Input --- */
     input[type="text"] {
       width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
       font-size: 16px;
+      font-family: var(--font);
+      transition: all 0.3s ease;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(71, 110, 0, 0.2);
     }
 
-    .checkbox-group {
-      margin-top: 10px;
+    /* --- Navigation Buttons --- */
+    .wizard-nav {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    .submit-btn {
-      margin-top: 30px;
-      padding: 12px 24px;
+    .btn {
+      padding: 12px 30px;
       font-size: 16px;
-      background-color: #28a745;
-      color: white;
+      font-weight: 600;
       border: none;
-      border-radius: 6px;
+      border-radius: 50px;
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-next {
+      background-color: var(--red);
+      color: white;
+    }
+    .btn-next:hover {
+      background-color: #c80000;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(241, 1, 0, 0.3);
+    }
+    .btn-prev {
+      background-color: #e0e0e0;
+      color: var(--dark-text);
+    }
+    .btn-prev:hover {
+      background-color: #ccc;
+    }
+    .btn-prev.hidden {
+      visibility: hidden;
     }
 
-    .submit-btn:hover {
-      background-color: #218838;
-    }
-
-    .tag-checkbox {
-      display: inline-block;
-      margin: 6px 8px 6px 0;
+    /* --- Validation Error --- */
+    .error-message {
+      color: var(--red);
+      font-weight: 500;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<form action="/restriction/dislikefl" method = "post">
+<div class="wizard-container">
+  <h1>Personalize Your Palate</h1>
+  <p class="wizard-intro">Help us understand your tastes so we can find food you'll love!</p>
 
-  <div class="container">
-    <h1>Personalize Your Food Preferences</h1>
-
-    <!-- 1. Disliked Flavors -->
-     
-
-        <h2>Disliked Flavors</h2>
-        <div class="checkbox-group" id="group-flavors">
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="spicy"> Spicy</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="bitter"> Bitter</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sour"> Sour</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sweet"> Too Sweet</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="oily"> Oily</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="pungent"> Pungent</label>
-        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="no-restrictions"> No Restrictions</label>
-        </div>
-
-    <!-- 2. Food Allergies -->
-    <h2>Food Allergies</h2>
-    <label for="allergies">Enter foods you're allergic to (comma-separated, "No" For No Restrictions):</label>
-    <input type="text" id="allergies" name="food_allergy_raw" placeholder="e.g. peanuts, shrimp, milk" required>
-
-    <!-- 3. Dietary Preferences -->
-    <h2>Dietary Preferences</h2>
-    <div class="checkbox-group" id="group-diet">
-      <label><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
-      <label><input type="checkbox" name="diet" value="vegan"> Vegan</label>
-      <label><input type="checkbox" name="diet" value="pescatarian"> Pescatarian</label>
-      <label><input type="checkbox" name="diet" value="halal"> Halal</label>
-      <label><input type="checkbox" name="diet" value="gluten-free"> Gluten-Free</label>
-      <label><input type="checkbox" name="diet" value="keto"> Keto</label>
-      <label><input type="checkbox" name="diet" value="low-carb"> Low Carb</label>
-      <label><input type="checkbox" name="diet" value="no-restrictions"> No Restrictions</label>
-    </div>
-
-    <h2>Preferred Cuisines</h2>
-    <div class="checkbox-group" id="group-cuisine">
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Vietnamese"> Vietnamese</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Japanese"> Japanese</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Korean"> Korean</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Italian"> Italian</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Indian"> Indian</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Mexican"> Mexican</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Thai"> Thai</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="Middle-Eastern"> Middle Eastern</label>
-      <label><input type="checkbox" name="Preferred_Cuisines" value="no-restrictions"> No Restrictions</label>
-    </div>
-
-    <button class="submit-btn" onclick="submitForm()">Submit</button>
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+    <div class="progress-step active" data-title="Step 1">1</div>
+    <div class="progress-step" data-title="Step 2">2</div>
+    <div class="progress-step" data-title="Step 3">3</div>
+    <div class="progress-step" data-title="Step 4">4</div>
   </div>
-</form>
+
+  <form id="restrictionForm" action="/restriction/dislikefl" method="post">
+    <!-- Step 1: Disliked Flavors -->
+    <div class="wizard-step active" id="step-1">
+      <h2>Which flavors do you generally dislike?</h2>
+      <div class="tag-group" id="group-flavors">
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="spicy"><span>Spicy</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="bitter"><span>Bitter</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sour"><span>Sour</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="sweet"><span>Too Sweet</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="oily"><span>Oily</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="pungent"><span>Pungent</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="hate_taste_adjectives" value="no-restrictions"><span>No Restrictions</span></label>
+      </div>
+      <div class="error-message" id="error-1">Please select at least one option.</div>
+    </div>
+
+    <!-- Step 2: Food Allergies -->
+    <div class="wizard-step" id="step-2">
+      <h2>Do you have any food allergies?</h2>
+      <p>List any foods you're allergic to, separated by commas. If none, please type "No".</p>
+      <input type="text" id="allergies" name="food_allergy_raw" placeholder="e.g. peanuts, shrimp, milk">
+      <div class="error-message" id="error-2">This field cannot be empty. Type "No" if you have no allergies.</div>
+    </div>
+
+    <!-- Step 3: Dietary Preferences -->
+    <div class="wizard-step" id="step-3">
+      <h2>Do you follow a specific diet?</h2>
+      <div class="tag-group" id="group-diet">
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="vegetarian"><span>Vegetarian</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="vegan"><span>Vegan</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="pescatarian"><span>Pescatarian</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="halal"><span>Halal</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="gluten-free"><span>Gluten-Free</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="keto"><span>Keto</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="low-carb"><span>Low Carb</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="diet" value="no-restrictions"><span>No Restrictions</span></label>
+      </div>
+      <div class="error-message" id="error-3">Please select at least one option.</div>
+    </div>
+
+    <!-- Step 4: Preferred Cuisines -->
+    <div class="wizard-step" id="step-4">
+      <h2>What are your favorite cuisines?</h2>
+      <div class="tag-group" id="group-cuisine">
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Vietnamese"><span>Vietnamese</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Japanese"><span>Japanese</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Korean"><span>Korean</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Italian"><span>Italian</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Indian"><span>Indian</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Mexican"><span>Mexican</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Thai"><span>Thai</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="Middle-Eastern"><span>Middle Eastern</span></label>
+        <label class="tag-checkbox"><input type="checkbox" name="Preferred_Cuisines" value="no-restrictions"><span>No Restrictions</span></label>
+      </div>
+      <div class="error-message" id="error-4">Please select at least one option.</div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="wizard-nav">
+      <button type="button" class="btn btn-prev hidden">Previous</button>
+      <button type="button" class="btn btn-next">Next</button>
+    </div>
+  </form>
+</div>
 
 <script>
-  function submitForm(e) {
-    // Lấy dữ liệu
-    const flavors = [...document.querySelectorAll('input[name="hate_taste_adjectives"]:checked')].map(el => el.value);
-    const allergies = document.getElementById('allergies').value.trim();
-    const diet = [...document.querySelectorAll('input[name="diet"]:checked')].map(el => el.value);
-    const cuisines = [...document.querySelectorAll('input[name="Preferred_Cuisines"]:checked')].map(el => el.value);
+  document.addEventListener('DOMContentLoaded', function () {
+    const prevBtn = document.querySelector('.btn-prev');
+    const nextBtn = document.querySelector('.btn-next');
+    const form = document.getElementById('restrictionForm');
+    const steps = Array.from(document.querySelectorAll('.wizard-step'));
+    const progressSteps = Array.from(document.querySelectorAll('.progress-step'));
+    const progress = document.getElementById('progress');
+    let currentStep = 0;
 
-    // Validation
-    const errors = [];
-
-    if (flavors.length === 0) {
-      errors.push("Please select at least one disliked flavor.");
-    }
-
-    if (!allergies) {
-      errors.push("Please enter food allergies (type 'No' if none).");
-    }
-
-    if (diet.length === 0) {
-      errors.push("Please select at least one dietary preference.");
-    }
-
-    if (cuisines.length === 0) {
-      errors.push("Please select at least one preferred cuisine.");
-    }
-
-    // Nếu có lỗi, dừng lại
-    if (errors.length > 0) {
-      if (e) e.preventDefault(); // Nếu được gọi từ event submit
-      alert(errors.join('\n'));
-      return false;
-    }
-
-    // Tạo object nếu hợp lệ
-    const result = {
-      dislikedFlavors: flavors,
-      foodAllergies: allergies.split(',').map(a => a.trim()),
-      dietaryPreferences: diet,
-      preferredCuisines: cuisines
+    const showStep = (stepIndex) => {
+      steps.forEach((step, index) => {
+        step.classList.toggle('active', index === stepIndex);
+      });
+      progressSteps.forEach((step, index) => {
+        step.classList.toggle('active', index <= stepIndex);
+      });
+      updateProgress();
+      updateNavButtons();
     };
 
-    console.log("Form data:", result);
-    return true;
-  }
+    const updateProgress = () => {
+      const activeSteps = document.querySelectorAll('.progress-step.active');
+      const width = ((activeSteps.length - 1) / (progressSteps.length - 1)) * 100;
+      progress.style.width = width + '%';
+    };
 
-  // Nếu dùng submit thông qua <form onsubmit>
-  document.querySelector('form').addEventListener('submit', function (e) {
-    submitForm(e); // Gọi kiểm tra trước khi cho submit
+    const updateNavButtons = () => {
+      prevBtn.classList.toggle('hidden', currentStep === 0);
+      nextBtn.textContent = currentStep === steps.length - 1 ? 'Save Preferences' : 'Next';
+    };
+
+    const validateStep = (stepIndex) => {
+      const currentStepElement = steps[stepIndex];
+      const errorElement = document.getElementById(`error-${stepIndex + 1}`);
+      let isValid = true;
+
+      if (stepIndex === 0 || stepIndex === 2 || stepIndex === 3) { // Checkbox groups
+        const checkboxes = currentStepElement.querySelectorAll('input[type="checkbox"]:checked');
+        if (checkboxes.length === 0) {
+          isValid = false;
+        }
+      } else if (stepIndex === 1) { // Allergy text input
+        const input = currentStepElement.querySelector('input[type="text"]');
+        if (input.value.trim() === '') {
+          isValid = false;
+        }
+      }
+
+      errorElement.style.display = isValid ? 'none' : 'block';
+      return isValid;
+    };
+
+    nextBtn.addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          showStep(currentStep);
+        } else {
+          form.submit(); // Submit the form on the last step
+        }
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+
+    // Smart "No Restrictions" logic
+    const checkboxGroups = document.querySelectorAll('.tag-group');
+    checkboxGroups.forEach(group => {
+      const checkboxes = Array.from(group.querySelectorAll('input[type="checkbox"]'));
+      const noRestrictionCheckbox = group.querySelector('input[value="no-restrictions"]');
+
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          if (checkbox === noRestrictionCheckbox && checkbox.checked) {
+            // If "No Restrictions" is checked, uncheck and disable others
+            checkboxes.forEach(cb => {
+              if (cb !== noRestrictionCheckbox) {
+                cb.checked = false;
+                cb.disabled = true;
+              }
+            });
+          } else if (checkbox !== noRestrictionCheckbox && checkbox.checked) {
+            // If another option is checked, uncheck "No Restrictions"
+            if (noRestrictionCheckbox) {
+              noRestrictionCheckbox.checked = false;
+            }
+          } else if (checkbox === noRestrictionCheckbox && !checkbox.checked) {
+             // If "No Restrictions" is unchecked, enable others
+             checkboxes.forEach(cb => {
+              if (cb !== noRestrictionCheckbox) {
+                cb.disabled = false;
+              }
+            });
+          }
+        });
+      });
+    });
+
+    // Initial state
+    showStep(currentStep);
   });
 </script>
-
 
 </body>
 </html>

@@ -36,12 +36,51 @@ body {
   width: 200px;
 }
 
-.sidebar .logo {
+/* .sidebar .logo {
   font-weight: 700;
   font-size: 1.2rem;
   color: var(--red);
   text-align: center;
   padding: 1rem 0;
+} */
+
+/* Adjust the nav-logo link to be a flex container for easy alignment */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem; /* Adjust padding as needed */
+  height: 60px; /* Give it a fixed height */
+  text-decoration: none;
+}
+
+/* Style the new logo image */
+.nav-logo .logo-img {
+  max-width: 44px;  /* Fits perfectly in the 80px collapsed sidebar with padding */
+  max-height: 44px;
+  object-fit: contain; /* Prevents the image from being stretched or squished */
+  transition: all 0.3s ease;
+  flex-shrink: 0; /* Prevents the image from shrinking */
+}
+
+/* Make the logo slightly larger on hover/expansion of the sidebar */
+.sidebar:hover .nav-logo .logo-img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+/* Keep the original text styling for when the sidebar expands */
+.nav-logo .text {
+    margin-left: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--green);
+}
+
+.sidebar:hover .nav-logo .text {
+    opacity: 1;
 }
 
 .nav-list {
@@ -313,4 +352,6 @@ body {
   text-decoration: none;
   width: 100%;
 }
-.sidebar .nav-link:hover { text-decoration: none; }
+.sidebar .nav-link:hover {
+  text-decoration: none;
+}

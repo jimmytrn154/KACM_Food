@@ -8,9 +8,10 @@
 
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <!-- Your CSS -->
   <link rel="stylesheet" th:href="@{/test.css}" />
@@ -23,10 +24,14 @@
 
 <body>
   <nav class="sidebar">
-    <div class="logo">KACM</div>
+    <!-- Use th:href to link to the homepage, and th:src for the logo image -->
+    <a th:href="@{/index}" class="nav-logo">
+      <img th:src="@{/images/favicon.png}" alt="KACM Logo" class="logo-img">
+      <span class="text">KACM</span>
+    </a>
     <ul class="nav-list">
       <li class="nav-item active">
-        <a th:href="@{/}" class="nav-link">
+        <a th:href="@{/index}" class="nav-link">
           <span class="material-icons">home</span>
           <span class="text">Main</span>
         </a>
@@ -39,10 +44,10 @@
       </li>
       <li class="nav-item">
         <a th:href="@{/recommend}" class="nav-link">
-            <span class="material-icons">emoji_food_beverage</span>
-            <span class="text">Recommend</span>
+          <span class="material-icons">emoji_food_beverage</span>
+          <span class="text">Recommend</span>
         </a>
-    </li>
+      </li>
       <li class="nav-item">
         <span class="material-icons">video_library</span>
         <span class="text">Feed</span>
@@ -108,7 +113,7 @@
       </div>
 
       <div class="card-group nearby">
-        <h2>Nearby Restaurants <a href="#">View More</a></h2>
+        <h2>Nearby Restaurants <a th:href="@{/explore(tab='restaurant')}">View More</a></h2>
         <div class="cards-column">
           <div class="card horizontal">
             <div class="card-img-sm"></div>

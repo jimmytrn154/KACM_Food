@@ -1,280 +1,536 @@
 /* explore.css */
 
-/* 0) SIDEBAR (from test.css) */
+/* 0) SIDEBAR (Corrected and Unchanged) */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 100vh;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  transition: width 0.3s;               /* smooth sidebar expand/collapse :contentReference[oaicite:0]{index=0} */
-  overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    transition: width 0.3s ease;
+    overflow-x: hidden;
+    z-index: 100;
 }
 .sidebar:hover {
-  width: 200px;
+    width: 200px;
 }
-.sidebar .logo {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--red);
-  text-align: center;
-  padding: 1rem 0;
+.nav-logo {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    height: 60px;
+    text-decoration: none;
 }
-.nav-list { list-style: none; }
+.nav-logo .logo-img {
+    max-width: 44px;
+    max-height: 44px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+.sidebar:hover .nav-logo .logo-img {
+    max-width: 50px;
+    max-height: 50px;
+}
+.nav-logo .text {
+    margin-left: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--green);
+}
+.sidebar:hover .nav-logo .text {
+    opacity: 1;
+}
+.nav-list {
+    list-style: none;
+    padding-left: 0;
+}
 .nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
+    padding: 0;
+}
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.nav-item.active .nav-link {
+    background: var(--yellow);
+}
+.nav-item.active .nav-link .material-icons {
+    color: var(--green);
+}
+.nav-link:hover {
+    background-color: #f0f0f0;
 }
 .nav-item .material-icons {
-  font-size: 1.5rem;
-  color: #333;
+    font-size: 1.5rem;
+    color: #333;
+    flex-shrink: 0;
 }
 .nav-item .text {
-  margin-left: 1rem;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
+    margin-left: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 .sidebar:hover .nav-item .text {
-  opacity: 1;
-}
-.nav-item.active {
-  background: var(--yellow);
-}
-.nav-item.active .material-icons {
-  color: var(--green);
-}
-.sidebar .nav-link {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  color: inherit;
-  text-decoration: none;
-}
-.sidebar .nav-link:hover {
-  text-decoration: none;
+    opacity: 1;
 }
 
-/* 1) Root & Global Resets */
+/* 1) Root & Global Resets (Unchanged) */
 :root {
-  --red:    #f10100;
-  --green:  #476e00;
-  --yellow: #ffd122;
-  --cream:  #f1e1c8;
-  --gold:   #d8d86b;
-  --font:   "Poppins", sans-serif;
+    --red: #f10100;
+    --green: #476e00;
+    --yellow: #ffd122;
+    --cream: #f1e1c8;
+    --gold: #d8d86b;
+    --font: "Poppins", sans-serif;
 }
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 body {
-  font-family: var(--font);
-  background: #fafafa;
+    font-family: var(--font);
+    background: #fafafa;
 }
 
-/* 2) Main content container */
-/* replicate test.css’s smooth margin-left transition :contentReference[oaicite:1]{index=1} */
+/* 2) Main content container (Unchanged) */
 .main-content {
-  margin-left: 80px;
-  margin-right: auto;          /* center on the right without overriding margin-left */
-  max-width: 1200px;
-  transition: margin-left 0.3s; 
-  padding: 2rem 1rem;
-  padding-left: 100px;
+    margin-left: 80px;
+    padding: 2rem 3rem;
+    transition: margin-left 0.3s ease;
 }
 .sidebar:hover ~ .main-content {
-  margin-left: 200px;
+    margin-left: 200px;
 }
 
-/* 3) Header & Search */
+/* 3) Header & Search (Unchanged) */
 .header {
-  text-align: center;
-  margin-bottom: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.exploreTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 1.5rem;
 }
 .search-container {
-  position: relative;
-  max-width: 600px;
-  margin: 0 auto 1.5rem;
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 30px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .search-container .search-icon {
-  position: absolute;
-  left: 1rem;
-  font-size: 1.5rem;
-  color: #666;
+    position: absolute;
+    left: 1rem;
+    font-size: 1.5rem;
+    color: #666;
 }
 .search-container input {
-  width: 100%;
-  padding: 0.5rem 1rem 0.5rem 3rem;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  color: #333;
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 3rem;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
 }
 
-/* 4) Tabs */
+/* 4) Tabs (Unchanged) */
 .tabs {
-  display: inline-flex;
-  background: var(--cream);
-  border-radius: 30px;
-  overflow: hidden;
-  margin: 1rem 0;
+    display: inline-flex;
+    background: var(--cream);
+    border-radius: 30px;
+    overflow: hidden;
+    margin: 1rem 0;
 }
 .tabs button {
-  background: none;
-  border: none;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #555;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+    background: none;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
 }
 .tabs button.active {
-  background: var(--yellow);
-  color: var(--green);
+    background: var(--yellow);
+    color: var(--green);
 }
 
-/* 5) Filter pills */
+/* 5) Filter pills (Unchanged) */
 .filter-row {
-  display: flex;
-  overflow-x: auto;
-  gap: 0.75rem;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 .filter-btn {
-  flex: 0 0 auto;
-  font-size: 0.9rem;
-  padding: 0.4rem 1rem;
-  border: 1px solid var(--green);
-  border-radius: 20px;
-  background: var(--cream);
-  color: var(--green);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    background: var(--cream);
+    color: var(--green);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
 }
 .filter-btn.active {
-  background: var(--green);
-  color: #fff;
-  border-color: var(--green);
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
 }
 
-/* 6) Grid layout */
+/* 6) Grid layout (Unchanged) */
 #food-grid {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 1.5rem;
-}
-@media (max-width: 768px) {
-  #food-grid { grid-template-columns: 1fr; }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
 }
 
-/* 7) Cards */
-#food-grid .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* 7) Cards (Unchanged) */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
 }
-#food-grid .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
 }
 .card-img {
-  position: relative;
-  width: 100%;
-  padding-top: 75%; /* 4:3 ratio */
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding-top: 75%;
+    overflow: hidden;
 }
 .card-img img {
-  position: absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  object-fit: cover;
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    object-fit: cover;
 }
 .card-body {
-  padding: 1rem;
+    padding: 1rem;
 }
 .card-body h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
 }
 .card-body .desc {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
 }
 .card-body .rating {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--gold);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gold);
 }
 
-/* 8) Detail view */
-.detail-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  padding: 2rem;
-  margin-top: 1.5rem;
+
+/* ================================================= */
+/* == 8) NEW DETAIL VIEW STYLING (FIGMA DESIGN) == */
+/* ================================================= */
+
+.detail-view-container {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.5s ease-in-out;
+    margin: 0 auto;
+    max-width: 1100px;
 }
-.detail-img {
-  width: 100%;
-  padding-top: 50%;
-  position: relative;
-  margin-bottom: 1.5rem;
-  border-radius: 12px;
-  overflow: hidden;
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.detail-img img {
-  position: absolute; top:0; left:0;
-  width:100%; height:100%;
-  object-fit: cover;
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
-.detail-card h2 { font-size: 1.8rem; margin-bottom: 0.75rem; }
-.detail-card h3 {
-  font-size: 1.2rem;
-  margin-top: 1.25rem; margin-bottom: 0.5rem;
+
+.detail-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #222;
 }
-.meta-row {
-  display: flex; flex-wrap: wrap; gap: 1.5rem;
-  color: #444; margin-bottom: 1.5rem;
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
 }
-.meta-row div {
-  display: flex; align-items: center; gap: 0.5rem;
+
+.action-buttons .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
-.meta-row .material-icons { font-size: 1.2rem; color: var(--green); }
+
+.btn-save {
+    background: var(--green);
+    color: #fff;
+}
+.btn-save:hover {
+    background: #3a5a00;
+}
+
+.btn-dislike {
+    background: #f0f0f0;
+    color: #555;
+    border: 1px solid #ddd;
+}
+.btn-dislike:hover {
+    background: #e0e0e0;
+}
+
+.detail-main-image {
+    width: 100%;
+    height: 450px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    background: #f5f5f5;
+}
+
+.detail-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-description {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    max-width: 80ch;
+    margin-bottom: 1.5rem;
+}
+
+.detail-tags {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+}
+
+.detail-tags .tag {
+    font-size: 0.8rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    background-color: var(--cream);
+    color: var(--green);
+}
+
+.info-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.info-card {
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.info-card .material-icons {
+    font-size: 2rem;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+}
+
+.info-card .label {
+    display: block;
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 0.25rem;
+}
+
+.info-card .value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.detail-main-content {
+    display: grid;
+    grid-template-columns: 1fr 1.75fr;
+    gap: 3rem;
+    border-top: 1px solid #eee;
+    padding-top: 2.5rem;
+}
+
+.ingredients-section h2, .nutrition-section h2, .instructions-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.ingredients-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.ingredients-section li {
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+    color: #444;
+}
+
+.ingredients-section li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--yellow);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.nutrition-section {
+    margin-top: 3rem;
+}
+
 .nutrition-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }
+
+.nutrition-item {
+    background-color: #fafafa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.nutrition-item .label {
+    display: block;
+    font-size: 0.9rem;
+    color: #777;
+}
+.nutrition-item .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.instructions-section ol {
+    list-style: none;
+    counter-reset: instructions-counter;
+    padding-left: 0;
+}
+
+.instructions-section li {
+    position: relative;
+    padding-left: 3rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.instructions-section li::before {
+    counter-increment: instructions-counter;
+    content: counter(instructions-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    background: var(--yellow);
+    color: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
 
 /* 9) Responsive */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; }
+@media (max-width: 992px) {
+    .main-content {
+        padding: 2rem 1.5rem;
+    }
+    #food-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .info-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .detail-main-content {
+        grid-template-columns: 1fr;
+    }
 }
 
-.map {
-  padding-left: 100px;
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    #food-grid {
+        grid-template-columns: 1fr;
+    }
+    .detail-view-container {
+        padding: 1.5rem;
+    }
+    .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .detail-header h1 {
+        font-size: 2rem;
+    }
 }
+
+/* Original map styles from your CSS */
+/* .map {
+  padding-left: ;
+} */
