@@ -6,12 +6,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import com.Chese.KACM_Recommendation.entities.User;
 
+//Should be renamed as user service
+
 @Service
 // LoginService là một service bean.
 // Spring sẽ tự động tạo một instance của LoginService và quản lý nó.
 // Các lớp khác (như LoginController) có thể sử dụng LoginService thông qua dependency injection (ví dụ: thông qua @Autowired).
 public class LoginService {
-    private List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>(); //Main DB for user storage
+    private long nextId = 3;
 
     public LoginService() {
         // Tích hợp data mẫu
@@ -30,6 +33,7 @@ public class LoginService {
     }
 
     public void addUser(User user) {
+        user.setId(nextId++);
         users.add(user);
     }
 }

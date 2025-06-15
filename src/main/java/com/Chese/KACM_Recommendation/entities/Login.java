@@ -7,6 +7,12 @@ public class Login {
     public Login() {}
     // Login là một Java Bean (hoặc POJO - Plain Old Java Object) 
     // được sử dụng để đại diện cho dữ liệu của một biểu mẫu đăng nhập, với hai thuộc tính username và password.
+    
+    // public Login(String username, String password) {
+    //     this.username = username;
+    //     this.password = password;
+    // }
+
     public String getUsername() {
         return username;
         // Cho phép các lớp khác (như LoginService hoặc View) truy cập giá trị của username một cách an toàn.

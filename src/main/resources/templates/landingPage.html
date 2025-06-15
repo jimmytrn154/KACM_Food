@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlavorFindr - Your Next Favorite Meal Awaits</title>
+    <title>KACM - Your Next Favorite Meal Awaits</title>
+
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
 
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,7 +131,7 @@
             align-items: center;
         }
 
-        .nav-logo {
+        /* .nav-logo {
             font-size: 1.8rem;
             font-weight: 900;
             color: var(--green);
@@ -138,6 +140,32 @@
 
         .nav-logo i {
             color: var(--red);
+        } */
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        /* Style the new logo image */
+        .nav-logo .logo-img {
+            max-width: 44px;
+            /* Fits perfectly in the 80px collapsed sidebar with padding */
+            max-height: 44px;
+            object-fit: contain;
+            /* Prevents the image from being stretched or squished */
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            /* Prevents the image from shrinking */
+            
+        }
+        .nav-logo .text {
+            font-size: 1.8rem;
+            text-decoration: none;
+            font-weight: 900;
+            color: var(--green);
+            padding-left: 5px;
         }
 
         .nav-links {
@@ -243,6 +271,7 @@
         .step-card:hover {
             transform: translateY(-10px);
             border-color: var(--yellow);
+            cursor: pointer;
         }
 
         .step-card .icon {
@@ -460,8 +489,18 @@
             text-align: center;
         }
 
-        .footer .nav-logo {
+        /* .footer .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        } */
+        .footer .container .nav-logo .text1 {
+            font-size: 1.8rem;
+            text-decoration: none;
+            font-weight: 900;
             color: var(--cream);
+            padding-left: 10px;
         }
 
         .footer-links {
@@ -554,7 +593,10 @@
     <!-- ======================= HEADER ======================= -->
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="#" class="nav-logo"><i class="fa-solid fa-utensils"></i> KACM</a>
+            <a th:href="@{/}" class="nav-logo">
+                <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
+                <span class="text">KACM</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
@@ -570,14 +612,14 @@
             <div class="container">
                 <div class="hero-content">
                     <h1 class="fade-in">Stop wondering. <br>Start <span>eating.</span></h1>
-                    <p class="fade-in" style="transition-delay: 0.2s;"> FlavorFindr is your personal food compass. Using
+                    <p class="fade-in" style="transition-delay: 0.2s;"> KACM is your personal food compass. Using
                         smart AI, we recommend dishes and restaurants you're guaranteed to love. Discover your next
                         favorite meal today. </p>
                     <div class="hero-buttons fade-in" style="transition-delay: 0.4s;">
-                        <div class="app-stores"> <a href="#"><img
+                        <div class="app-stores"> <a href="/login"><img
                                     src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                                    alt="Get it on Google Play"></a> <a href="#"><img
-                                    src="https://upload.wikimedia.org/wikipedia/commons/5/5d/Available_on_the_App_Store_(black_and_white).svg"
+                                    alt="Get it on Google Play"></a> <a href="/login"><img
+                                    src="https://www.svgrepo.com/show/353415/apple-app-store.svg"
                                     alt="Download on the App Store"></a> </div>
                     </div>
                 </div>
@@ -646,9 +688,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="features-image fade-in"> <img
-                            src="https://images.unsplash.com/photo-1598514982202-727ce46205e4?q=80&w=1887&auto=format&fit=crop"
-                            alt="App Screenshot"> </div>
+                    <div class="features-image fade-in"> <img th:src="@{/images/appGlance.png}" alt="App Screenshot">
+                    </div>
                 </div>
             </div>
         </section>
@@ -658,7 +699,7 @@
             <div class="container">
                 <div class="section-title fade-in">
                     <h2>The Chefs in the Kitchen</h2>
-                    <p>Meet the passionate team stirring the pot at FlavorFindr.</p>
+                    <p>Meet the passionate team stirring the pot at KACM.</p>
                 </div>
                 <div class="team-grid">
                     <!-- Team Member 1 -->
@@ -668,7 +709,7 @@
                         <img th:src="@{/images/tminh.jpg}" alt="Team Member 1" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Trieu Minh</h3>
-                            <p>CEO & Co-Founder</p>
+                            <p>CEO & UI/UX specialist</p>
                             <div class="team-card-action">
                                 <i class="fas fa-plus-circle"></i> View Bio
                             </div>
@@ -676,11 +717,10 @@
                     </div>
                     <!-- Team Member 2 -->
                     <div class="team-card fade-in" style="transition-delay: 0.1s;" data-name="Chun Tran"
-                        data-role="Full-stack"
-                        data-img="/images/chun.jpg"
-                        data-bio="The architect of the KACM platform, Chun brings years of software engineering experience to the table. They are responsible for the powerful AI engine and ensuring the app runs smoothly and efficiently.">
-                        <img th:src="@{/images/chunn.jpg}"
-                            alt="Team Member 2" class="team-card-image">
+                        data-role="Full-stack" data-img="/images/chunn.jpg" 
+                        data-bio="The architect of the KACM platform, Chun brings years of software engineering experience to the table. They are responsible for the powerful AI engine and ensuring the app runs smoothly and efficiently."
+                        data-gh="https://github.com/jimmytrn154">
+                        <img th:src="@{/images/chunn.jpg}" alt="Team Member 2" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Chun Tran</h3>
                             <p>Full-stack</p>
@@ -691,11 +731,9 @@
                     </div>
                     <!-- Team Member 3 -->
                     <div class="team-card fade-in" style="transition-delay: 0.2s;" data-name="Chi kien"
-                        data-role="Back End and Algo"
-                        data-img="/images/kien.jpg"
+                        data-role="Back End and Algo" data-img="/images/kien.jpg"
                         data-bio="With a keen eye for aesthetics and user experience, Chi Kien is the creative force behind KACM's beautiful and intuitive design. They believe that finding food should be as delightful as eating it.">
-                        <img th:src="@{/images/kien.jpg}"
-                            alt="Team Member 3" class="team-card-image">
+                        <img th:src="@{/images/kien.jpg}" alt="Team Member 3" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Chi Kien</h3>
                             <p>BackEnd and Algo</p>
@@ -706,11 +744,9 @@
                     </div>
                     <!-- Team Member 4 -->
                     <div class="team-card fade-in" style="transition-delay: 0.3s;" data-name="Duy An"
-                        data-role="Back End and Algo"
-                        data-img="/images/aduyanh.png"
-                        data-bio="Duy An is the storyteller who connects KACM with food lovers everywhere. They manage our brand presence, community outreach, and strategy for bringing our app to millions of hungry users.">
-                        <img th:src="@{/images/aduyanh.png}"
-                            alt="Team Member 4" class="team-card-image">
+                        data-role="Back End and Algo" data-img="/images/aduyanh.png"
+                        data-bio="Duy An is the storyteller who connects KACM with food lovers everywhere. With his experience in competitive programming, specifically 3rd place in VOI, the app is integrated with the most advanced algorithm for best user experience.">
+                        <img th:src="@{/images/aduyanh.png}" alt="Team Member 4" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Duy An</h3>
                             <p>BackEnd and Algo</p>
@@ -728,7 +764,10 @@
     <!-- ======================= FOOTER ======================= -->
     <footer class="footer">
         <div class="container">
-            <a href="#" class="nav-logo"><i class="fa-solid fa-utensils"></i> KACM</a>
+            <a th:href="@{/}" class="nav-logo">
+                <img th:src="@{/images/Icon2.png}" alt="KACM Logo" class="logo-img">
+                <span class="text1">KACM</span>
+            </a>
             <ul class="footer-links">
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Contact</a></li>
@@ -751,7 +790,7 @@
             <div class="modal-social">
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
+                <a class="gh" href="#" target="_blank"><i class="fab fa-github"></i></a>
             </div>
         </div>
     </div>
@@ -791,6 +830,7 @@
         const modalRole = modal.querySelector('.role');
         const modalImage = modal.querySelector('.modal-image');
         const modalBio = modal.querySelector('.bio');
+        const modalGH = modal.querySelector('.gh'); //modal for github
 
         // --- Team Modal Logic ---
         const openModal = (card) => {
@@ -801,6 +841,7 @@
             modalName.textContent = card.dataset.name;
             modalRole.textContent = card.dataset.role;
             modalBio.textContent = card.dataset.bio;
+            modalGH.href = card.dataset.gh;
 
             modal.classList.add('active');
             document.body.classList.add('modal-open');
@@ -827,12 +868,12 @@
 
     </script>
     <script>
-    (function () {
-      var s = document.createElement('script');
-      s.src = 'http://localhost:35729/livereload.js?snipver=1';
-      document.body.appendChild(s);
-    })();
-  </script>
+        (function () {
+            var s = document.createElement('script');
+            s.src = 'http://localhost:35729/livereload.js?snipver=1';
+            document.body.appendChild(s);
+        })();
+    </script>
 </body>
 
 </html>

@@ -12,3 +12,4 @@ public class Restaurant {
         locations.put("ComTam", new LocationCoordinate("ComTam", 20.98730, 105.94410));
     }
 }
+    
