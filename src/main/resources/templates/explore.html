@@ -248,17 +248,37 @@
                         renderGrid();
                     });
             } else if (tab === 'restaurant') {
-                // restaurant tab not yet implemented (Your original code, untouched)
-                content.innerHTML = `
-                <section class='map'>
-                    <h3>Route to Restaurant</h3>
-                    <ul id="restaurantList">
-                        <li data-key="Pho24">Pho 24</li>
-                        <li data-key="BunChaHaNoi">Bún Chả Hà Nội</li>
-                        <li data-key="ComTam">Cơm Tấm Sài Gòn</li>
-                    </ul>
-                    <div id="map" style="height: 700px; margin-top: 1rem;"></div>
-                </section>`;
+                let dishes = []
+
+                const drawCards = list => {
+                    document.getElementById('food-grid').innerHTML =
+                        list.map((food, index) => `
+                                <li data-key=${food.id}>${food.name}</li>
+                        `).join('');
+                };
+
+                const renderGrid = () => {
+                    content.innerHTML = `
+                    <section class='map'>
+                        <h3>Route to Restaurant</h3>
+                        <ul id="restaurantList">
+                            <div class="cards-row" id="food-grid"></div>
+                        </ul>
+                        <div id="map" style="height: 700px; margin-top: 1rem;"></div>
+                    </section>
+                    `;
+                    drawCards(dishes);
+                };
+
+                async function loadDishes() {
+                    const api = `/restaurant_recommend`;
+                    const res = await fetch(api);
+                    dishes = await res.json();
+                    renderGrid();
+                }
+                
+                loadDishes(); 
+                
             }
         })();
     </script>

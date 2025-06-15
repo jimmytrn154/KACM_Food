@@ -71,7 +71,7 @@ class maxheap{
         }
 
         heap[i]=heap[--currentsize];
-        position.put(heap[i].getId(), currentsize);
+        position.put(heap[i].getId(), i);
 
         while(i!=0&&heap[i].getScore()>heap[parent(i)].getScore()){
             FoodSummary temp = heap[parent(i)];
@@ -155,7 +155,7 @@ public class RecommendationService {
 
         for (FoodDetail food : foods) {
             food.setScore(0); 
-        }        
+        }  
         
         for(FoodDetail food : foods){
             boolean flag = false;
@@ -165,7 +165,7 @@ public class RecommendationService {
                     break;
                 }
             }
-
+            
             if(flag == true) continue;
             flag = false;
 
@@ -210,14 +210,18 @@ public class RecommendationService {
                     break;
                 }
             }
+            
             if(flag == true) continue;
             flag = false;
+
             for(String ingre : food.getIngredients()){
                 if(foodAllergys.contains(ingre)){
                     flag = true;
                     break;
                 }
             }
+
+            if(flag == true) continue;
 
             for(String tag : food.getTags()){
                 if(preferredCuisines.contains(tag)){
@@ -230,9 +234,11 @@ public class RecommendationService {
         return cusine_graph.sort();
     }
 
-    public void delete(String id){
-        diet_graph.delete(diet_graph.position.get(id));
-        cusine_graph.delete(cusine_graph.position.get(id));
-    }
-
+    public void delete(String id) {
+        Integer idx1 = diet_graph.position.get(id);
+        Integer idx2 = cusine_graph.position.get(id);
+        
+        if (idx1 != null) diet_graph.delete(idx1);
+        if (idx2 != null) cusine_graph.delete(idx2);
+    }    
 }
