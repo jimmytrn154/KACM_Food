@@ -30,6 +30,6 @@ public class RestrictionController {
         System.out.println(restriction.getdiet());
         System.out.println(restriction.getPreferred_Cuisines());
         session.setAttribute("restriction", restriction);
-        return "redirect:/";
+        return "redirect:/index";
     }
 }

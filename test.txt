@@ -1,0 +1,49 @@
+        <script>
+        let dishes = [];
+        let priority = "";
+
+        const content = document.getElementById("content");
+
+        const drawCards = list => {
+            document.getElementById('food-grid').innerHTML =
+                list.map((food, index) => `
+                    <div class="card" onclick="location.href='/explore?tab=food&id=${food.id}'">
+                    <div class="card-rank">${index + 1}</div>
+                        <div class="card-img"><img src="${food.imageUrl}" alt="${food.name}"></div>
+                        <div class="card-body">
+                            <h3>${food.name}</h3>
+                            <div class="detail-tags">${food.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+                            <p class="desc">${food.description}</p>
+                            <p class="rating">⭐ ${food.rating}</p>
+                            <button class="delete-btn" onclick="removeCard(${food.id})">🗑️ Xóa</button>
+                        </div>
+                    </div>
+                `).join('');
+        };
+
+        const renderGrid = () => {
+            content.innerHTML = `
+                <div class="cards-row" id="food-grid"></div>
+            `;
+            drawCards(dishes);
+        };
+
+        document.getElementById("suggest-btn").addEventListener("click", async function (){
+            const priority = document.getElementById("filter-priority").value;
+            const apiUrl = `/${priority}`;
+            const res = await fetch(apiUrl)
+            dishes = await res.json();
+            renderGrid();
+        });
+
+        async function removeCard(id){
+            const api = 'delete/${id}';
+            const res = await fetch(api);
+            const priority = document.getElementById("filter-priority").value;
+            const apiUrl = `/${priority}`;
+            const newRest = await fetch(apiUrl)
+            dishes = await newRest.json();
+            renderGrid();
+        };
+           
+        </script>
