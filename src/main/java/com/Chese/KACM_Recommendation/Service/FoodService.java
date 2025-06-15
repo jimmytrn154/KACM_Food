@@ -110,9 +110,9 @@ public class FoodService {
         List.of("salmon", "soy sauce", "mirin", "sugar", "ginger"),
         List.of("Marinate fish.", "Pan-sear or grill.", "Glaze with sauce."),
         new Nutrition("490 kcal", "36g", "12g", "28g")
-    ));
+        ));
 
-    foodMap.put("f10", new FoodDetail(
+        foodMap.put("f10", new FoodDetail(
         "f10", "Green Curry Chicken", "data:image/jpeg;base64,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",
         List.of("Thai", "spicy", "sweet", "gluten-free"),
         4.7,
@@ -121,7 +121,167 @@ public class FoodService {
         List.of("chicken", "green curry paste", "coconut milk", "eggplant", "basil"),
         List.of("Cook curry paste.", "Add chicken and simmer.", "Serve with rice."),
         new Nutrition("530 kcal", "32g", "20g", "28g")
-    ));
+        ));
+
+        foodMap.put("f11", new FoodDetail(
+        "f11", "Vietnamese Crispy Fish with Cilantro",
+        "data:image/jpeg;base64,/…",  // Use your base64 image
+        List.of("Vietnamese", "seafood", "comfort-food", "Spicy", "sweet"),
+        4.5,
+        "Pan-fried white fish in a tangy ginger-fish sauce topped with cilantro.",
+        "15 minutes", "15 minutes", "Easy", "4 people",
+        List.of("white fish fillets", "ginger", "onion", "jalapeño", "fish sauce", "cilantro", "lime"),
+        List.of(
+                "Season fish, then pan-sear one side until crispy.",
+                "Sauté ginger, onion, jalapeño with fish sauce + water + sugar.",
+                "Pour sauce over fish, sprinkle cilantro + lime juice; serve with rice."
+        ),
+        new Nutrition("343 kcal", "7g", "14g", "47g")
+        ));
+
+        foodMap.put("f12", new FoodDetail(
+        "f12", "BBQ Ribs",
+        "data:image/jpeg;base64,/…",
+        List.of("American", "grilled", "pork", "sweet"),
+        4.6,
+        "Tender pork ribs slow-cooked with smoky BBQ glaze.",
+        "15 minutes", "2 hours", "Medium", "4 people",
+        List.of("pork ribs", "BBQ sauce", "brown sugar", "paprika", "garlic powder", "apple cider vinegar"),
+        List.of(
+                "Rub ribs with spices; bake at 160 C covered for 90 min.",
+                "Uncover, brush with BBQ sauce; bake another 30 min.",
+                "Rest 10 min before slicing; serve with extra sauce."
+        ),
+        new Nutrition("750 kcal", "35 g", "45 g", "50 g")
+        ));
+
+        foodMap.put("f13", new FoodDetail(
+        "f13", "Teriyaki Chicken",
+        "data:image/jpeg;base64,/…",
+        List.of("Japanese", "sweet", "soy", "chicken"),
+        4.8,
+        "Pan-seared chicken glazed in a sweet-salty teriyaki sauce.",
+        "10 minutes", "15 minutes", "Easy", "2 people",
+        List.of("chicken thighs", "soy sauce", "mirin", "sugar", "ginger", "garlic"),
+        List.of(
+                "Mix soy, mirin, sugar, ginger, garlic into sauce.",
+                "Pan-fry chicken skin-down until crisp; flip.",
+                "Add sauce; simmer until glossy and thick."
+        ),
+        new Nutrition("480 kcal", "20 g", "18 g", "45 g")
+        ));
+
+        foodMap.put("f14", new FoodDetail(
+        "f14", "Beef Steak in Red Wine Sauce",
+        "data:image/jpeg;base64,/…",
+        List.of("French", "beef", "wine", "rich"),
+        4.9,
+        "Juicy steak served with a silky red wine reduction.",
+        "10 minutes", "25 minutes", "Medium", "2 people",
+        List.of("sirloin steak", "red wine", "butter", "shallots", "beef stock", "thyme"),
+        List.of(
+                "Sear steak both sides; rest.",
+                "Sauté shallots, deglaze with wine + stock; reduce.",
+                "Add butter, thyme; spoon over steak to serve."
+        ),
+        new Nutrition("650 kcal", "25 g", "35 g", "40 g")
+        ));
+
+        foodMap.put("f15", new FoodDetail(
+        "f15", "Beef Steak in Pepper Sauce",
+        "data:image/jpeg;base64,/…",
+        List.of("Western", "beef", "creamy", "pepper"),
+        4.7,
+        "Seared steak with a creamy, bold black pepper sauce.",
+        "10 minutes", "20 minutes", "Medium", "2 people",
+        List.of("ribeye steak", "black pepper", "cream", "brandy", "shallots", "beef stock"),
+        List.of(
+                "Sear steak, set aside to rest.",
+                "Sauté shallots, flambe with brandy.",
+                "Add cream, pepper, stock; reduce and serve with steak."
+        ),
+        new Nutrition("720 kcal", "28 g", "40 g", "50 g")
+        ));
+
+        foodMap.put("f16", new FoodDetail(
+        "f16", "Chicken Rice",
+        "data:image/jpeg;base64,/…",
+        List.of("Asian", "rice", "chicken", "comfort-food"),
+        4.6,
+        "Fragrant poached chicken with seasoned rice and soy-ginger sauce.",
+        "15 minutes", "30 minutes", "Easy", "4 people",
+        List.of("whole chicken", "jasmine rice", "ginger", "garlic", "soy sauce", "cucumber"),
+        List.of(
+                "Boil chicken with ginger, garlic until tender.",
+                "Cook rice in chicken broth with chicken fat.",
+                "Slice chicken, serve with rice, soy sauce, cucumber."
+        ),
+        new Nutrition("620 kcal", "18 g", "20 g", "80 g")
+        ));
+
+        foodMap.put("f17", new FoodDetail(
+        "f17", "Pork Chop Rice",
+        "data:image/jpeg;base64,/…",
+        List.of("Taiwanese", "pork", "rice", "fried"),
+        4.4,
+        "Crispy pork chop served with seasoned rice and pickles.",
+        "20 minutes", "20 minutes", "Easy", "2 people",
+        List.of("pork chops", "soy sauce", "five spice", "rice", "cornstarch", "pickled vegetables"),
+        List.of(
+                "Marinate pork in soy, five spice; coat in starch.",
+                "Pan-fry or deep-fry until golden.",
+                "Serve with steamed rice and pickles."
+        ),
+        new Nutrition("680 kcal", "22 g", "30 g", "70 g")
+        ));
+
+        foodMap.put("f18", new FoodDetail(
+        "f18", "Spaghetti Carbonara",
+        "data:image/jpeg;base64,/…",
+        List.of("Italian", "pasta", "creamy", "egg"),
+        4.8,
+        "Silky egg-based spaghetti with pancetta and black pepper.",
+        "10 minutes", "15 minutes", "Easy", "2 people",
+        List.of("spaghetti", "eggs", "pecorino romano", "guanciale or pancetta", "black pepper"),
+        List.of(
+                "Boil pasta; save some water.",
+                "Fry pancetta, whisk eggs + cheese.",
+                "Mix pasta + pancetta off heat with egg mixture, add water to emulsify."
+        ),
+        new Nutrition("550 kcal", "18 g", "22 g", "60 g")
+        ));
+
+        foodMap.put("f19", new FoodDetail(
+        "f19", "Spaghetti Bolognese",
+        "data:image/jpeg;base64,/…",
+        List.of("Italian", "pasta", "beef", "tomato"),
+        4.6,
+        "Rich meat sauce slow-cooked with tomato and herbs.",
+        "15 minutes", "45 minutes", "Medium", "4 people",
+        List.of("spaghetti", "ground beef", "onion", "carrot", "tomato paste", "oregano"),
+        List.of(
+                "Sauté onion, carrot, beef until browned.",
+                "Add tomato paste, herbs, water; simmer 30 min.",
+                "Serve sauce over pasta, top with parmesan."
+        ),
+        new Nutrition("670 kcal", "25 g", "20 g", "85 g")
+        ));
+
+        foodMap.put("f20", new FoodDetail(
+        "f20", "Spaghetti Aglio e Olio",
+        "data:image/jpeg;base64,/…",
+        List.of("Italian", "pasta", "garlic", "vegan"),
+        4.3,
+        "Simple pasta tossed with garlic, olive oil, and chili flakes.",
+        "5 minutes", "10 minutes", "Easy", "2 people",
+        List.of("spaghetti", "garlic", "olive oil", "chili flakes", "parsley"),
+        List.of(
+                "Boil pasta; save water.",
+                "Fry sliced garlic in oil gently; add chili flakes.",
+                "Toss pasta with garlic oil and some water to coat."
+        ),
+        new Nutrition("460 kcal", "8 g", "18 g", "60 g")
+        ));
 
         // ...add f2, f3, etc.
     }
