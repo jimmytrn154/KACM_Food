@@ -15,6 +15,7 @@
 
   <!-- Your CSS -->
   <link rel="stylesheet" th:href="@{/test.css}" />
+  <link rel="stylesheet" th:href="@{/sidebar.css}" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
@@ -38,10 +39,23 @@
   <!-- =================================== -->
   <!-- == LOADING SCREEN ENDS HERE == -->
   <!-- =================================== -->
+
+  <!-- =================================== -->
+  <!-- == NEW RESPONSIVE ELEMENTS == -->
+  <!-- =================================== -->
+  <!-- This button is only visible on mobile -->
+  <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  
+  <div class="sidebar-overlay"></div>
+
   <nav class="sidebar">
     <!-- Use th:href to link to the homepage, and th:src for the logo image -->
     <a th:href="@{/index}" class="nav-logo">
-      <img th:src="@{/images/favicon.png}" alt="KACM Logo" class="logo-img">
+      <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
       <span class="text">KACM</span>
     </a>
     <ul class="nav-list">
@@ -64,16 +78,22 @@
         </a>
       </li>
       <li class="nav-item">
-        <span class="material-icons">video_library</span>
-        <span class="text">Feed</span>
+        <a href="#" class="nav-link">
+          <span class="material-icons">video_library</span>
+          <span class="text">Feed</span>
+        </a>
       </li>
       <li class="nav-item">
-        <span class="material-icons">add_box</span>
-        <span class="text">Post</span>
+        <a href="#" class="nav-link">
+          <span class="material-icons">add_box</span>
+          <span class="text">Post</span>
+        </a>
       </li>
       <li class="nav-item">
-        <span class="material-icons">person</span>
-        <span class="text">Profile</span>
+        <a href="#" class="nav-link">
+          <span class="material-icons">person</span>
+          <span class="text">Profile</span>
+        </a>
       </li>
     </ul>
   </nav>
@@ -154,17 +174,6 @@
         </div>
       </div>
     </section>
-
-    <!-- **ADDED: Routing Map Section** -->
-    <!-- <section>
-      <h3>Route to Restaurant</h3>
-      <ul id="restaurantList">
-        <li data-key="Pho24">Pho 24</li>
-        <li data-key="BunChaHaNoi">Bún Chả Hà Nội</li>
-        <li data-key="ComTam">Cơm Tấm Sài Gòn</li>
-      </ul>
-      <div id="map" style="height: 500px; margin-top: 1rem;"></div>
-    </section> -->
 
     <section class="friends-section">
       <h2>See your friends’ food! <a href="#">View More</a></h2>
@@ -254,6 +263,37 @@
         }, 500); // This should match the transition duration in your CSS (0.5s)
 
       }, 3000); // Total duration of the loading screen
+    });
+  </script>
+  <!-- =================================== -->
+  <!-- == JAVASCRIPT FOR RESPONSIVE BEHAVIOR == -->
+  <!-- =================================== -->
+  <script>
+    // --- NEW Sidebar Responsive Logic ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.querySelector('.mobile-menu-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+
+      // Function to toggle all necessary classes
+      const toggleSidebar = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+        toggleBtn.classList.toggle('open'); // Toggle button's own state for CSS animation
+      };
+
+      // Event listeners
+      if (toggleBtn && sidebar && overlay) {
+        // The button now correctly toggles the sidebar state
+        toggleBtn.addEventListener('click', toggleSidebar);
+
+        // The overlay closes the sidebar (and resets the button state)
+        overlay.addEventListener('click', () => {
+          if (sidebar.classList.contains('open')) {
+            toggleSidebar();
+          }
+        });
+      }
     });
   </script>
 

@@ -24,183 +24,86 @@ body {
 /* ============================================= */
 
 #loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--cream); /* Using your color palette */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out; /* For smooth fade-out */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--cream); /* Using your color palette */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* For smooth fade-out */
 }
 
 /* Add this class with JavaScript to hide the overlay */
 #loading-overlay.hidden {
-    opacity: 0;
+  opacity: 0;
 }
 
 .loading-content {
-    text-align: center;
-    color: var(--green);
+  text-align: center;
+  color: var(--green);
 }
 
 .loading-logo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1.5rem;
-    /* The animation is defined below */
-    animation: pulse 2s infinite ease-in-out;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+  /* The animation is defined below */
+  animation: pulse 2s infinite ease-in-out;
 }
 
 /* Keyframes for a subtle, professional pulse effect */
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .loading-text {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
 }
 
 .progress-bar-container {
-    width: 250px;
-    height: 8px;
-    background-color: rgba(71, 110, 0, 0.2); /* Lighter green */
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 0 auto;
+  width: 250px;
+  height: 8px;
+  background-color: rgba(71, 110, 0, 0.2); /* Lighter green */
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
 }
 
 .progress-bar-fill {
-    width: 0%;
-    height: 100%;
-    background-color: var(--green);
-    border-radius: 4px;
-    /* The animation will be controlled by JavaScript, but a transition makes it smooth */
-    transition: width 0.5s ease-out;
+  width: 0%;
+  height: 100%;
+  background-color: var(--green);
+  border-radius: 4px;
+  /* The animation will be controlled by JavaScript, but a transition makes it smooth */
+  transition: width 0.5s ease-out;
 }
 
 /* Add this animation to be triggered by JavaScript */
 @keyframes fill-progress {
-    from { width: 0%; }
-    to { width: 100%; }
-}
-
-
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 80px;
-  height: 100vh;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  transition: width 0.3s;
-  overflow: hidden;
-}
-
-.sidebar:hover {
-  width: 200px;
-}
-
-/* .sidebar .logo {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--red);
-  text-align: center;
-  padding: 1rem 0;
-} */
-
-/* Adjust the nav-logo link to be a flex container for easy alignment */
-.nav-logo {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1rem; /* Adjust padding as needed */
-  height: 60px; /* Give it a fixed height */
-  text-decoration: none;
-}
-
-/* Style the new logo image */
-.nav-logo .logo-img {
-  max-width: 44px;  /* Fits perfectly in the 80px collapsed sidebar with padding */
-  max-height: 44px;
-  object-fit: contain; /* Prevents the image from being stretched or squished */
-  transition: all 0.3s ease;
-  flex-shrink: 0; /* Prevents the image from shrinking */
-}
-
-/* Make the logo slightly larger on hover/expansion of the sidebar */
-.sidebar:hover .nav-logo .logo-img {
-    max-width: 50px;
-    max-height: 50px;
-}
-
-/* Keep the original text styling for when the sidebar expands */
-.nav-logo .text {
-    margin-left: 1rem;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: var(--green);
-}
-
-.sidebar:hover .nav-logo .text {
-    opacity: 1;
-}
-
-.nav-list {
-  list-style: none;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.nav-item .material-icons {
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.nav-item .text {
-  margin-left: 1rem;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.sidebar:hover .nav-item .text {
-  opacity: 1;
-}
-
-/* active state */
-.nav-item.active {
-  background: var(--yellow);
-}
-.nav-item.active .material-icons {
-  color: var(--green);
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 /* MAIN CONTENT */
@@ -415,12 +318,12 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .sidebar {
+  /* .sidebar {
     display: none;
   }
   .main-content {
     margin-left: 0;
-  }
+  } */
   .cards-section {
     flex-direction: column;
   }
@@ -429,13 +332,3 @@ body {
   }
 }
 
-.sidebar .nav-link {
-  display: flex;
-  align-items: center;
-  color: inherit;
-  text-decoration: none;
-  width: 100%;
-}
-.sidebar .nav-link:hover {
-  text-decoration: none;
-}
