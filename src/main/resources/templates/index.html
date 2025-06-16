@@ -29,7 +29,10 @@
 <!-- ============================================= -->
 <div id="loading-overlay">
   <div class="loading-content">
-    <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="loading-logo">
+    <!-- little “card” around the logo -->
+    <div class="loading-card">
+      <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="loading-logo" />
+    </div>
     <p class="loading-text">Getting your recommendations ready...</p>
     <div class="progress-bar-container">
       <div class="progress-bar-fill"></div>
