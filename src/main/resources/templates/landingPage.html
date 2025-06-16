@@ -18,6 +18,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        .easy-pie-section {
+            position: relative;
+            z-index: 1;
+            background:
+                    linear-gradient(rgba(255, 245, 225, 0.7), rgba(255, 233, 192, 0.7)),
+                    url('/images/icon_square.png');
+            background-blend-mode: lighten;
+            background-size: 175px auto;
+        }
+
+        .easy-pie-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
         :root {
             --red: #f10100;
             --green: #476e00;
@@ -625,7 +646,7 @@
                 </div>
             </div>
         </section>
-        <section id="how-it-works">
+        <section id="how-it-works" class="easy-pie-section">
             <div class="container">
                 <div class="section-title fade-in">
                     <h2>It's as Easy as Pie</h2>
@@ -704,12 +725,12 @@
                 <div class="team-grid">
                     <!-- Team Member 1 -->
                     <div class="team-card fade-in" data-name="Tuanades" data-role="CEO & Co-Founder"
-                        data-img="/images/tminh.jpg"
+                        data-img="/images/tminh.png"
                         data-bio="The visionary behind KACM, Tuana started this project with a simple goal: to make sure no one ever has a disappointing meal again. A lifelong foodie and tech enthusiast, they lead the team with passion and a clear direction.">
-                        <img th:src="@{/images/tminh.jpg}" alt="Team Member 1" class="team-card-image">
+                        <img th:src="@{/images/tminh.png}" alt="Team Member 1" class="team-card-image">
                         <div class="team-card-content">
-                            <h3>Trieu Minh</h3>
-                            <p>CEO & UI/UX specialist</p>
+                            <h3>Million$ Minh</h3>
+                            <p>CEO & UI/UX Specialist</p>
                             <div class="team-card-action">
                                 <i class="fas fa-plus-circle"></i> View Bio
                             </div>
@@ -730,12 +751,12 @@
                         </div>
                     </div>
                     <!-- Team Member 3 -->
-                    <div class="team-card fade-in" style="transition-delay: 0.2s;" data-name="Chi kien"
+                    <div class="team-card fade-in" style="transition-delay: 0.2s;" data-name="Kien Tri"
                         data-role="Back End and Algo" data-img="/images/kien.jpg"
                         data-bio="With a keen eye for aesthetics and user experience, Chi Kien is the creative force behind KACM's beautiful and intuitive design. They believe that finding food should be as delightful as eating it.">
                         <img th:src="@{/images/kien.jpg}" alt="Team Member 3" class="team-card-image">
                         <div class="team-card-content">
-                            <h3>Chi Kien</h3>
+                            <h3>Kien Tri</h3>
                             <p>BackEnd and Algo</p>
                             <div class="team-card-action">
                                 <i class="fas fa-plus-circle"></i> View Bio
@@ -746,7 +767,7 @@
                     <div class="team-card fade-in" style="transition-delay: 0.3s;" data-name="Duy An"
                         data-role="Back End and Algo" data-img="/images/aduyanh.png"
                         data-bio="Duy An is the storyteller who connects KACM with food lovers everywhere. With his experience in competitive programming, specifically 3rd place in VOI, the app is integrated with the most advanced algorithm for best user experience.">
-                        <img th:src="@{/images/aduyanh.png}" alt="Team Member 4" class="team-card-image">
+                        <img th:src="@{/images/DuyAnAI.png}" alt="Team Member 4" class="team-card-image">
                         <div class="team-card-content">
                             <h3>Duy An</h3>
                             <p>BackEnd and Algo</p>

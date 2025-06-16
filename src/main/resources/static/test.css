@@ -110,9 +110,33 @@ body {
   height: 100%;
   background-color: var(--green);
   border-radius: 4px;
-  /* The animation will be controlled by JavaScript, but a transition makes it smooth */
-  transition: width 0.5s ease-out;
 }
+
+.progress-bar-fill.animate {
+  animation: fill-progress 3s ease-out forwards;
+}
+
+/* Hides the overlay smoothly */
+#loading-overlay.hidden {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.skip-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.skip-btn:hover {
+  background: #3a5b00;
+}
+
 
 /* Add this animation to be triggered by JavaScript */
 @keyframes fill-progress {
