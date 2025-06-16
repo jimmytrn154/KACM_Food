@@ -24,202 +24,241 @@
 </head>
 
 <body>
-  <!-- ============================================= -->
-  <!-- == NEW ADVANCED LOADING SCREEN STARTS HERE == -->
-  <!-- ============================================= -->
-  <div id="loading-overlay">
-    <div class="loading-content">
-      <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="loading-logo">
-      <p class="loading-text">Getting your recommendations ready...</p>
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill"></div>
-      </div>
+<!-- ============================================= -->
+<!-- == NEW ADVANCED LOADING SCREEN STARTS HERE == -->
+<!-- ============================================= -->
+<div id="loading-overlay">
+  <div class="loading-content">
+    <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="loading-logo">
+    <p class="loading-text">Getting your recommendations ready...</p>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill"></div>
     </div>
   </div>
-  <!-- =================================== -->
-  <!-- == LOADING SCREEN ENDS HERE == -->
-  <!-- =================================== -->
+</div>
+<!-- =================================== -->
+<!-- == LOADING SCREEN ENDS HERE == -->
+<!-- =================================== -->
 
-  <!-- =================================== -->
-  <!-- == NEW RESPONSIVE ELEMENTS == -->
-  <!-- =================================== -->
-  <!-- This button is only visible on mobile -->
-  <button class="mobile-menu-toggle" aria-label="Toggle Menu">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-  
-  <div class="sidebar-overlay"></div>
+<!-- =================================== -->
+<!-- == NEW RESPONSIVE ELEMENTS == -->
+<!-- =================================== -->
+<!-- This button is only visible on mobile -->
+<button class="mobile-menu-toggle" aria-label="Toggle Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
 
-  <nav class="sidebar">
-    <!-- Use th:href to link to the homepage, and th:src for the logo image -->
-    <a th:href="@{/index}" class="nav-logo">
-      <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
-      <span class="text">KACM</span>
-    </a>
-    <ul class="nav-list">
-      <li class="nav-item active">
-        <a th:href="@{/index}" class="nav-link">
-          <span class="material-icons">home</span>
-          <span class="text">Main</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a th:href="@{/explore(tab='food')}" class="nav-link">
-          <span class="material-icons">explore</span>
-          <span class="text">Explore</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a th:href="@{/recommend}" class="nav-link">
-          <span class="material-icons">emoji_food_beverage</span>
-          <span class="text">Recommend</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-icons">video_library</span>
-          <span class="text">Feed</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-icons">add_box</span>
-          <span class="text">Post</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-icons">person</span>
-          <span class="text">Profile</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+<div class="sidebar-overlay"></div>
 
-  <main class="main-content">
-    <header class="header">
-      <h1>WHAT DO YOU WANNA EAT TODAY?</h1>
-      <div class="search-container">
-        <span class="material-icons search-icon"></span>
-        <input type="text" placeholder="Search for dishes, restaurants..." />
-      </div>
-    </header>
+<nav class="sidebar">
+  <!-- Use th:href to link to the homepage, and th:src for the logo image -->
+  <a th:href="@{/index}" class="nav-logo">
+    <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
+    <span class="text">KACM</span>
+  </a>
+  <ul class="nav-list">
+    <li class="nav-item active">
+      <a th:href="@{/index}" class="nav-link">
+        <span class="material-icons">home</span>
+        <span class="text">Main</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a th:href="@{/explore(tab='food')}" class="nav-link">
+        <span class="material-icons">explore</span>
+        <span class="text">Explore</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a th:href="@{/recommend}" class="nav-link">
+        <span class="material-icons">emoji_food_beverage</span>
+        <span class="text">Recommend</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">
+        <span class="material-icons">video_library</span>
+        <span class="text">Feed</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">
+        <span class="material-icons">add_box</span>
+        <span class="text">Post</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">
+        <span class="material-icons">person</span>
+        <span class="text">Profile</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
-    <section class="cards-section">
-      <div class="card-group featured">
-        <h2>Featured Dishes <a th:href="@{/explore(tab='food')}">View More</a></h2>
-        <div class="cards-row" id="featured-container">
-          <!-- <div class="card">
-            <div class="card-img">
-              <img src="https://images2.thanhnien.vn/528068263637045248/2024/7/1/anh-man-hinh-2024-07-01-luc-113638-17198087615431007741437.png" alt="" >
-            </div>
-            <div class="card-body">
-              <h3>Com Tam</h3>
-              <p class="tags">#spicy #grilled</p>
-              <p class="rating">⭐ 4.5</p>
-              <p class="desc">Ngon so 1 Viet Nam!!.</p>
-            </div>
+<main class="main-content">
+
+  <header class="header">
+    <h1>WHAT DO YOU WANNA EAT TODAY?</h1>
+    <div class="search-container">
+      <span class="material-icons search-icon"></span>
+      <input type="text" placeholder="Search for dishes, restaurants..." />
+    </div>
+
+    <div class="tag-bubbles">
+      <div class="bubble">🍜 Vietnamese</div>
+      <div class="bubble">🌶 Spicy</div>
+      <div class="bubble">🥗 Healthy</div>
+      <div class="bubble">🍛 Curry</div>
+      <div class="bubble">🍕 Fast Food</div>
+    </div>
+
+  </header>
+
+  <section class="cards-section">
+    <div class="card-group featured">
+      <h2>Featured Dishes <a th:href="@{/explore(tab='food')}">View More</a></h2>
+      <div class="cards-row" id="featured-container">
+        <!-- <div class="card">
+          <div class="card-img">
+            <img src="https://images2.thanhnien.vn/528068263637045248/2024/7/1/anh-man-hinh-2024-07-01-luc-113638-17198087615431007741437.png" alt="" >
           </div>
-          <div class="card">
-            <div class="card-img">
-              <img src="https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg" alt="">
-            </div>
-            <div class="card-body">
-              <h3>Bun dau mam tom</h3>
-              <p class="tags">#shrimppaste #fresh #tofu</p>
-              <p class="rating">⭐ 4.2</p>
-              <p class="desc">Mon ngon de nau tai nha rat ngon.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-img">
-              <img src="https://nineshield.com.vn/wp-content/uploads/2024/03/com-chien-duong-chau-ngon.jpg" alt="">
-            </div>
-            <div class="card-body">
-              <h3>Com Chien Duong Chau</h3>
-              <p class="tags">#sweet #dessert</p>
-              <p class="rating">⭐ 4.8</p>
-              <p class="desc">Mon gay nghien den tu mien tay!.</p>
-            </div>
-          </div> -->
-        </div>
-      </div>
-
-      <div class="card-group nearby">
-        <h2>Nearby Restaurants <a th:href="@{/explore(tab='restaurant')}">View More</a></h2>
-        <div class="cards-column">
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
-          </div>
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
-          </div>
-          <div class="card horizontal">
-            <div class="card-img-sm"></div>
-            <div class="card-body">
-              <h3>Restaurant Name</h3>
-              <p class="desc-sm">Brief info: cuisine, distance, rating.</p>
-            </div>
+          <div class="card-body">
+            <h3>Com Tam</h3>
+            <p class="tags">#spicy #grilled</p>
+            <p class="rating">⭐ 4.5</p>
+            <p class="desc">Ngon so 1 Viet Nam!!.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="friends-section">
-      <h2>See your friends’ food! <a href="#">View More</a></h2>
-      <div class="feed">
-        <div class="feed-card">
-          <div class="feed-header">
-            <div class="avatar"></div>
-            <span class="friend-name">Friend Name</span>
+        <div class="card">
+          <div class="card-img">
+            <img src="https://trumfood.vn/wp-content/uploads/2022/09/bdmt.jpg" alt="">
           </div>
-          <div class="feed-img"></div>
-        </div>
-        <div class="feed-card">
-          <div class="feed-header">
-            <div class="avatar"></div>
-            <span class="friend-name">Friend Name</span>
+          <div class="card-body">
+            <h3>Bun dau mam tom</h3>
+            <p class="tags">#shrimppaste #fresh #tofu</p>
+            <p class="rating">⭐ 4.2</p>
+            <p class="desc">Mon ngon de nau tai nha rat ngon.</p>
           </div>
-          <div class="feed-img"></div>
+        </div>
+        <div class="card">
+          <div class="card-img">
+            <img src="https://nineshield.com.vn/wp-content/uploads/2024/03/com-chien-duong-chau-ngon.jpg" alt="">
+          </div>
+          <div class="card-body">
+            <h3>Com Chien Duong Chau</h3>
+            <p class="tags">#sweet #dessert</p>
+            <p class="rating">⭐ 4.8</p>
+            <p class="desc">Mon gay nghien den tu mien tay!.</p>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="card-group nearby">
+      <h2>Nearby Restaurants <a th:href="@{/explore(tab='restaurant')}">View More</a></h2>
+      <div class="cards-column">
+        <div class="restaurant-card">
+          <div class="card-img-sm">
+            <img src="https://example.com/images/phobo.jpg" alt="Pho Bo" style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
+          <div class="card-body">
+            <h3>
+              Pho Bo 24h
+              <span class="rating-badge">⭐ 4.7</span>
+            </h3>
+            <p class="desc-sm">Authentic Hanoi-style beef noodle soup</p>
+            <div class="distance">🚶 450m from your location</div>
+            <div class="tags">
+              <span class="tag">#vietnamese</span>
+              <span class="tag">#noodles</span>
+              <span class="tag">#beef</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="restaurant-card">
+          <div class="card-img-sm">
+            <img src="https://example.com/images/sushiya.jpg" alt="Sushi Ya" style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
+          <div class="card-body">
+            <h3>Sushi Ya
+              <span class="rating-badge">⭐ 4.9</span></h3>
+            <p class="desc-sm">Fresh Japanese sushi & sashimi platters</p>
+            <div class="distance">🚗 1.2 km away</div>
+            <div class="tags">
+              <span class="tag">#japanese</span>
+              <span class="tag">#sushi</span>
+              <span class="tag">#fresh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="restaurant-card">
+          <div class="card-img-sm">
+            <img src="https://example.com/images/buncha.jpg" alt="Bun Cha Ha Noi" style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
+          <div class="card-body">
+            <h3>Bun Cha Ha Noi
+              <span class="rating-badge">⭐ 4.5</span></h3>
+            <p class="desc-sm">Grilled pork & noodles with dipping sauce</p>
+            <div class="distance">🚶 700m</div>
+            <div class="tags">
+              <span class="tag">#vietnamese</span>
+              <span class="tag">#grilled</span>
+              <span class="tag">#pork</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.src = 'http://localhost:35729/livereload.js?snipver=1';
-      document.body.appendChild(s);
-    })();
-  </script>
-  <script>
-    // fetch & render featured dishes
-    window.addEventListener('DOMContentLoaded', () => {
-      fetch('/api/featured')
-        .then(res => res.json())
-        .then(foods => {
-          const container = document.getElementById('featured-container');
-          foods.forEach(food => {
-            const card = document.createElement('div');
-            card.className = 'card';
+  <section class="friends-section">
+    <h2>See your friends’ food! <a href="#">View More</a></h2>
+    <div class="feed">
+      <div class="feed-card">
+        <div class="feed-header">
+          <div class="avatar"></div>
+          <span class="friend-name">Friend Name</span>
+        </div>
+        <div class="feed-img"></div>
+      </div>
+      <div class="feed-card">
+        <div class="feed-header">
+          <div class="avatar"></div>
+          <span class="friend-name">Friend Name</span>
+        </div>
+        <div class="feed-img"></div>
+      </div>
+    </div>
+  </section>
+</main>
 
-            // ← add this click handler
-            card.onclick = () => {
-              window.location.href = `/explore?tab=food&id=${food.id}`;
-            };
-
-            card.innerHTML = `
+<script>
+  (function () {
+    var s = document.createElement('script');
+    s.src = 'http://localhost:35729/livereload.js?snipver=1';
+    document.body.appendChild(s);
+  })();
+</script>
+<script>
+  // fetch & render featured dishes
+  window.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/featured')
+            .then(res => res.json())
+            .then(foods => {
+              const container = document.getElementById('featured-container');
+              foods.forEach(food => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => {
+                  window.location.href = `/explore?tab=food&id=${food.id}`;
+                };
+                card.innerHTML = `
+          <div class="card-inner">
             <div class="card-img">
               <img src="${food.imageUrl}" alt="${food.name}">
             </div>
@@ -227,75 +266,78 @@
               <h3>${food.name}</h3>
               <p class="tags">${food.tags.map(t => `#${t}`).join(' ')}</p>
               <p class="rating">⭐ ${food.rating}</p>
-              <p class="desc">${food.description}</p>
-            </div>`;
-            container.appendChild(card);
-          });
-        })
-        .catch(console.error);
-    });
-  </script>
+              <p class="desc hover-info">${food.description}</p>
+            </div>
+          </div>
+        `;
+                container.appendChild(card);
+              });
+            })
+            .catch(console.error);
+  });
+</script>
 
-  <!-- **ADDED (JS script tags for map implementation): Leaflet & Routing Machine scripts + your routing logic** -->
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-  <script th:src="@{/js/app.js}"></script>
+<!-- **ADDED (JS script tags for map implementation): Leaflet & Routing Machine scripts + your routing logic** -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script th:src="@{/js/app.js}"></script>
 
-  <!-- At the bottom of your index.html file, inside the script tag -->
-  <script>
-    // Wait until the entire page is fully loaded (including images, css, etc.)
-    window.addEventListener('load', function () {
-      const loadingOverlay = document.getElementById('loading-overlay');
-      const progressBarFill = document.querySelector('.progress-bar-fill');
+<!-- At the bottom of your index.html file, inside the script tag -->
+<script>
+  // Wait until the entire page is fully loaded (including images, css, etc.)
+  window.addEventListener('load', function () {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const progressBarFill = document.querySelector('.progress-bar-fill');
 
-      // Apply the animation to the progress bar
+    // Only show loading screen if not shown before in this session
+    const hasLoadedBefore = sessionStorage.getItem('hasLoadedIndex');
+
+    if (!hasLoadedBefore) {
       progressBarFill.style.animation = 'fill-progress 3s ease-out forwards';
 
-      // Set a timer for how long the loading screen should be visible
-      // 3000 milliseconds = 3 seconds. Adjust this value as needed.
       setTimeout(function () {
-        // Add the 'hidden' class to trigger the fade-out CSS transition
         loadingOverlay.classList.add('hidden');
-
-        // Wait for the fade-out transition to complete before setting display to 'none'
         setTimeout(function () {
           loadingOverlay.style.display = 'none';
-        }, 500); // This should match the transition duration in your CSS (0.5s)
+          sessionStorage.setItem('hasLoadedIndex', 'true'); // Set the flag
+        }, 500);
+      }, 3000);
+    } else {
+      loadingOverlay.style.display = 'none';
+    }
+  });
+</script>
+<!-- =================================== -->
+<!-- == JAVASCRIPT FOR RESPONSIVE BEHAVIOR == -->
+<!-- =================================== -->
+<script>
+  // --- NEW Sidebar Responsive Logic ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.querySelector('.mobile-menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
 
-      }, 3000); // Total duration of the loading screen
-    });
-  </script>
-  <!-- =================================== -->
-  <!-- == JAVASCRIPT FOR RESPONSIVE BEHAVIOR == -->
-  <!-- =================================== -->
-  <script>
-    // --- NEW Sidebar Responsive Logic ---
-    document.addEventListener('DOMContentLoaded', () => {
-      const toggleBtn = document.querySelector('.mobile-menu-toggle');
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
+    // Function to toggle all necessary classes
+    const toggleSidebar = () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+      toggleBtn.classList.toggle('open'); // Toggle button's own state for CSS animation
+    };
 
-      // Function to toggle all necessary classes
-      const toggleSidebar = () => {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('active');
-        toggleBtn.classList.toggle('open'); // Toggle button's own state for CSS animation
-      };
+    // Event listeners
+    if (toggleBtn && sidebar && overlay) {
+      // The button now correctly toggles the sidebar state
+      toggleBtn.addEventListener('click', toggleSidebar);
 
-      // Event listeners
-      if (toggleBtn && sidebar && overlay) {
-        // The button now correctly toggles the sidebar state
-        toggleBtn.addEventListener('click', toggleSidebar);
-
-        // The overlay closes the sidebar (and resets the button state)
-        overlay.addEventListener('click', () => {
-          if (sidebar.classList.contains('open')) {
-            toggleSidebar();
-          }
-        });
-      }
-    });
-  </script>
+      // The overlay closes the sidebar (and resets the button state)
+      overlay.addEventListener('click', () => {
+        if (sidebar.classList.contains('open')) {
+          toggleSidebar();
+        }
+      });
+    }
+  });
+</script>
 
 </body>
 
