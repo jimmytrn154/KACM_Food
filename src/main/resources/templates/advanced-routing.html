@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Routing Features</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .feature-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .feature-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid #ddd;
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .results h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .route-info {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .route-info strong {
+            color: #3498db;
+        }
+        
+        .slider-container {
+            margin: 10px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .slider-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .benchmark-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            margin: 20px 0;
+            gap: 20px;
+        }
+        
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, #3498db, #2980b9);
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px;
+            color: white;
+            font-weight: 600;
+            min-width: 80px;
+        }
+        
+        .bar-label {
+            margin-top: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .pareto-plot {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+            background: #fafafa;
+        }
+        
+        .poi-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .poi-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .poi-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .poi-card .time {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .k-paths-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .path-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .path-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .congestion-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .congestion-high {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .congestion-medium {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .congestion-low {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .routing-divider {
+            width: 100%;
+            height: 100px;
+            background: #000000;
+            position: relative;
+            margin: 40px 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .routing-divider::before,
+        .routing-divider::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #FFFFFF;
+        }
+        
+        .routing-divider::before {
+            top: 33%;
+        }
+        
+        .routing-divider::after {
+            top: 67%;
+        }
+        
+        .header-divider {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="routing-divider header-divider"></div>
+        <h1>🚀 Advanced Routing Features Demo</h1>
+        <div class="routing-divider"></div>
+        
+        <!-- Feature 1: Time-Dependent Routing -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>1. Time-Dependent Routing (Traffic-Aware)</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                See how departure time affects the route due to traffic congestion during rush hours.
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="td-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>To:</label>
+                    <select id="td-to">
+                        <option value="f1">Pho24 (f1)</option>
+                        <option value="f2">BunChaHaNoi (f2)</option>
+                        <option value="f3">Oliver's Pizza (f3)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Departure Hour:</label>
+                    <input type="number" id="td-hour" min="0" max="23" value="8">
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="getTimeDependentRoute()">Get Route</button>
+                </div>
+            </div>
+            <div id="td-map" class="map-container"></div>
+            <div id="td-results" class="results" style="display: none;"></div>
+        </div>
+        
+        <!-- Feature 2: Customizable Routing -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>2. Customizable Routing (CCH/CRP)</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Adjust routing preferences and see instant route updates using Contraction Hierarchies.
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="ch-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>To:</label>
+                    <select id="ch-to">
+                        <option value="f1">Pho24 (f1)</option>
+                        <option value="f2">BunChaHaNoi (f2)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="slider-container">
+                <label>Time Weight: <span class="slider-value" id="time-val">1.0</span></label>
+                <input type="range" class="slider" id="time-slider" min="0" max="2" step="0.1" value="1.0" 
+                       oninput="document.getElementById('time-val').textContent = this.value">
+            </div>
+            <div class="slider-container">
+                <label>Avoid Highways: <span class="slider-value" id="highway-val">0.5</span></label>
+                <input type="range" class="slider" id="highway-slider" min="0" max="2" step="0.1" value="0.5"
+                       oninput="document.getElementById('highway-val').textContent = this.value">
+            </div>
+            <div class="slider-container">
+                <label>Prefer Scenic: <span class="slider-value" id="scenic-val">0.3</span></label>
+                <input type="range" class="slider" id="scenic-slider" min="0" max="2" step="0.1" value="0.3"
+                       oninput="document.getElementById('scenic-val').textContent = this.value">
+            </div>
+            <button onclick="getCustomizableRoute()" style="margin-top: 15px;">Update Route</button>
+            <div id="ch-map" class="map-container"></div>
+            <div id="ch-results" class="results" style="display: none;"></div>
+        </div>
+        
+        <!-- Feature 3: Top-K POI Search -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>3. Top-K Nearest Restaurants (Travel Time)</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Find nearest restaurants by actual travel time, not straight-line distance.
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="poi-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Number of Restaurants (K):</label>
+                    <input type="number" id="poi-k" min="1" max="10" value="5">
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="getNearestRestaurants()">Find Nearest</button>
+                </div>
+            </div>
+            <div id="poi-map" class="map-container"></div>
+            <div id="poi-results" class="results" style="display: none;"></div>
+        </div>
+        
+        <!-- Feature 4: Multi-Criteria Routing -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>4. Multi-Criteria Routing (Pareto-Optimal)</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Get multiple optimal routes based on different criteria (time, safety, scenic, etc.)
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="pareto-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>To:</label>
+                    <select id="pareto-to">
+                        <option value="f1">Pho24 (f1)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="getParetoRoutes()">Find Pareto Routes</button>
+                </div>
+            </div>
+            <div id="pareto-map" class="map-container"></div>
+            <div id="pareto-results" class="results" style="display: none;"></div>
+        </div>
+        
+        <!-- Feature 5: K-Shortest Paths -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>5. K-Shortest Paths (Route Alternatives)</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Get multiple route alternatives ranked by travel time.
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="ksp-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>To:</label>
+                    <select id="ksp-to">
+                        <option value="f1">Pho24 (f1)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Number of Paths (K):</label>
+                    <input type="number" id="ksp-k" min="2" max="5" value="3">
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="getKShortestPaths()">Get Alternatives</button>
+                </div>
+            </div>
+            <div id="ksp-map" class="map-container"></div>
+            <div id="ksp-results" class="results" style="display: none;"></div>
+        </div>
+        
+        <!-- Benchmark -->
+        <div class="routing-divider"></div>
+        <div class="feature-section">
+            <h2>Performance Benchmark: Dijkstra vs CCH</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Compare query performance between standard Dijkstra and Contraction Hierarchy.
+            </p>
+            <div class="controls">
+                <div class="control-group">
+                    <label>From:</label>
+                    <select id="bench-from">
+                        <option value="VinUniversity">VinUniversity</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>To:</label>
+                    <select id="bench-to">
+                        <option value="f1">Pho24 (f1)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="runBenchmark()">Run Benchmark</button>
+                </div>
+            </div>
+            <div id="bench-results" class="results" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize maps
+        const maps = {};
+        const markers = {};
+        const layers = {};
+        
+        function initMap(id) {
+            const map = L.map(id).setView([20.99, 105.945], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            maps[id] = map;
+            layers[id] = [];
+            return map;
+        }
+        
+        function clearMap(id) {
+            if (layers[id]) {
+                layers[id].forEach(layer => maps[id].removeLayer(layer));
+                layers[id] = [];
+            }
+        }
+        
+        function drawPath(mapId, path, color = '#3498db', weight = 4) {
+            if (!maps[mapId]) initMap(mapId);
+            clearMap(mapId);
+            
+            const latlngs = path.map(coord => [coord.lat, coord.lon]);
+            const polyline = L.polyline(latlngs, {color: color, weight: weight}).addTo(maps[mapId]);
+            layers[mapId].push(polyline);
+            
+            // Add markers
+            if (path.length > 0) {
+                const startMarker = L.marker([path[0].lat, path[0].lon])
+                    .bindPopup('Start: ' + path[0].name)
+                    .addTo(maps[mapId]);
+                layers[mapId].push(startMarker);
+                
+                const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon])
+                    .bindPopup('End: ' + path[path.length - 1].name)
+                    .addTo(maps[mapId]);
+                layers[mapId].push(endMarker);
+            }
+            
+            maps[mapId].fitBounds(latlngs);
+        }
+        
+        // Feature 1: Time-Dependent Routing
+        async function getTimeDependentRoute() {
+            const from = document.getElementById('td-from').value;
+            const to = document.getElementById('td-to').value;
+            const hour = parseInt(document.getElementById('td-hour').value);
+            
+            try {
+                const response = await fetch(`/api/route/time-dependent?from=${from}&to=${to}&departureHour=${hour}`);
+                const data = await response.json();
+                
+                drawPath('td-map', data.path, '#e74c3c');
+                
+                const resultsDiv = document.getElementById('td-results');
+                resultsDiv.style.display = 'block';
+                const congestion = data.congestionInfo;
+                const congestionClass = congestion.rushHour ? 'congestion-high' : 
+                                       congestion.congestedSegments > 0 ? 'congestion-medium' : 'congestion-low';
+                resultsDiv.innerHTML = `
+                    <h3>Route Information</h3>
+                    <div class="route-info">
+                        <strong>Departure Hour:</strong> ${hour}:00
+                        <span class="congestion-badge ${congestionClass}">
+                            ${congestion.rushHour ? 'Rush Hour' : 'Normal Traffic'}
+                        </span>
+                    </div>
+                    <div class="route-info">
+                        <strong>Congested Segments:</strong> ${congestion.congestedSegments}
+                    </div>
+                    <div class="route-info">
+                        <strong>Total Congestion Penalty:</strong> ${(congestion.totalCongestionPenalty * 100).toFixed(0)}%
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Feature 2: Customizable Routing
+        async function getCustomizableRoute() {
+            const from = document.getElementById('ch-from').value;
+            const to = document.getElementById('ch-to').value;
+            const prefs = {
+                timeWeight: parseFloat(document.getElementById('time-slider').value),
+                highwayWeight: parseFloat(document.getElementById('highway-slider').value),
+                scenicWeight: parseFloat(document.getElementById('scenic-slider').value),
+                safetyWeight: 0.4,
+                turnWeight: 0.2,
+                tollWeight: 0.1
+            };
+            
+            try {
+                const response = await fetch('/api/route/customizable', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({from, to, preferences: prefs})
+                });
+                const data = await response.json();
+                
+                drawPath('ch-map', data.path, '#27ae60');
+                
+                const resultsDiv = document.getElementById('ch-results');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h3>Customized Route (CCH)</h3>
+                    <div class="route-info">
+                        <strong>Method:</strong> ${data.method}
+                    </div>
+                    <div class="route-info">
+                        <strong>Preferences Applied:</strong> Time=${prefs.timeWeight}, 
+                        Avoid Highways=${prefs.highwayWeight}, Prefer Scenic=${prefs.scenicWeight}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Feature 3: Top-K POI Search
+        async function getNearestRestaurants() {
+            const from = document.getElementById('poi-from').value;
+            const k = parseInt(document.getElementById('poi-k').value);
+            
+            try {
+                const response = await fetch(`/api/route/nearest-restaurants?from=${from}&k=${k}`);
+                const data = await response.json();
+                
+                if (!maps['poi-map']) initMap('poi-map');
+                clearMap('poi-map');
+                
+                const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12', '#9b59b6'];
+                data.forEach((poi, idx) => {
+                    drawPath('poi-map', poi.path, colors[idx % colors.length], 3);
+                });
+                
+                const resultsDiv = document.getElementById('poi-results');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h3>Nearest ${k} Restaurants by Travel Time</h3>
+                    <div class="poi-list">
+                        ${data.map((poi, idx) => `
+                            <div class="poi-card">
+                                <h4>#${idx + 1}: ${poi.restaurantId}</h4>
+                                <div class="time">${poi.travelTime.toFixed(1)} minutes</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Feature 4: Pareto-Optimal Routes
+        async function getParetoRoutes() {
+            const from = document.getElementById('pareto-from').value;
+            const to = document.getElementById('pareto-to').value;
+            
+            try {
+                const response = await fetch(`/api/route/pareto?from=${from}&to=${to}`);
+                const data = await response.json();
+                
+                if (!maps['pareto-map']) initMap('pareto-map');
+                clearMap('pareto-map');
+                
+                const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12'];
+                data.forEach((route, idx) => {
+                    drawPath('pareto-map', route.path, colors[idx % colors.length], 3);
+                });
+                
+                const resultsDiv = document.getElementById('pareto-results');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h3>Pareto-Optimal Routes (${data.length} found)</h3>
+                    ${data.map((route, idx) => `
+                        <div class="route-info">
+                            <strong>Route ${idx + 1}:</strong> Time=${route.criteria.travelTime.toFixed(1)}min, 
+                            Highway=${route.criteria.highwayPenalty.toFixed(2)}, 
+                            Scenic=${route.criteria.scenicScore.toFixed(2)}, 
+                            Safety=${route.criteria.safetyScore.toFixed(2)}
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Feature 5: K-Shortest Paths
+        async function getKShortestPaths() {
+            const from = document.getElementById('ksp-from').value;
+            const to = document.getElementById('ksp-to').value;
+            const k = parseInt(document.getElementById('ksp-k').value);
+            
+            try {
+                const response = await fetch(`/api/route/k-shortest?from=${from}&to=${to}&k=${k}`);
+                const data = await response.json();
+                
+                if (!maps['ksp-map']) initMap('ksp-map');
+                clearMap('ksp-map');
+                
+                const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12', '#9b59b6'];
+                data.forEach((path, idx) => {
+                    drawPath('ksp-map', path.path, colors[idx % colors.length], 3);
+                });
+                
+                const resultsDiv = document.getElementById('ksp-results');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h3>K-Shortest Paths (${data.length} alternatives)</h3>
+                    <div class="k-paths-list">
+                        ${data.map((path, idx) => `
+                            <div class="path-card">
+                                <h4>${path.description || `Path ${idx + 1}`}</h4>
+                                <div><strong>Travel Time:</strong> ${path.travelTime.toFixed(1)} minutes</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Benchmark
+        async function runBenchmark() {
+            const from = document.getElementById('bench-from').value;
+            const to = document.getElementById('bench-to').value;
+            
+            try {
+                const response = await fetch(`/api/route/benchmark?from=${from}&to=${to}`);
+                const data = await response.json();
+                
+                const resultsDiv = document.getElementById('bench-results');
+                resultsDiv.style.display = 'block';
+                
+                const maxTime = Math.max(data.dijkstraTime, data.chTime);
+                const dijkstraHeight = (data.dijkstraTime / maxTime) * 100;
+                const chHeight = (data.chTime / maxTime) * 100;
+                
+                resultsDiv.innerHTML = `
+                    <h3>Performance Comparison</h3>
+                    <div class="benchmark-chart">
+                        <div>
+                            <div class="bar" style="height: ${dijkstraHeight}%">
+                                ${data.dijkstraTime}μs
+                            </div>
+                            <div class="bar-label">Dijkstra</div>
+                        </div>
+                        <div>
+                            <div class="bar" style="height: ${chHeight}%">
+                                ${data.chTime}μs
+                            </div>
+                            <div class="bar-label">CCH</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <strong>Speedup:</strong> ${data.speedup.toFixed(2)}x faster with CCH
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Initialize all maps
+        ['td-map', 'ch-map', 'poi-map', 'pareto-map', 'ksp-map'].forEach(id => {
+            initMap(id);
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graph Recommendations</title>
+    <link rel="stylesheet" th:href="@{/test.css}" />
+    <link rel="stylesheet" th:href="@{/sidebar.css}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <style>
+        .kg-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .kg-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .kg-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .kg-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .status-connected {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .status-disconnected {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .kg-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group select[multiple] {
+            height: 150px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .results-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .recommendation-card {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .recommendation-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-card .cost {
+            color: #27ae60;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .recommendation-card .info {
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #fee;
+            border: 1px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .info-box h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a th:href="@{/index}" class="nav-logo">
+            <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
+            <span class="text">KACM</span>
+        </a>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a th:href="@{/index}" class="nav-link">
+                    <span class="material-icons">home</span>
+                    <span class="text">Main</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/recommend}" class="nav-link">
+                    <span class="material-icons">emoji_food_beverage</span>
+                    <span class="text">Recommend</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a th:href="@{/kg-recommend}" class="nav-link">
+                    <span class="material-icons">account_tree</span>
+                    <span class="text">KG Recommend</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="kg-container">
+            <div class="routing-divider header-divider"></div>
+            <div class="kg-header">
+                <h1>🧠 Knowledge Graph Recommendations</h1>
+                <p>Powered by Food4healthKG and Neo4j</p>
+                <div th:if="${connected}" class="status-badge status-connected">
+                    ✓ Neo4j Connected
+                </div>
+                <div th:if="${!connected}" class="status-badge status-disconnected">
+                    ✗ Neo4j Disconnected
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>How It Works:</h4>
+                <ul>
+                    <li>Uses Dijkstra's algorithm on the Food4healthKG knowledge graph</li>
+                    <li>Considers your diseases and allergies as constraints</li>
+                    <li>Recommends foods with positive health outcomes and minimal negative associations</li>
+                    <li>Lower "total cost" indicates higher suitability</li>
+                </ul>
+            </div>
+
+            <div class="kg-form">
+                <h2>Get Recommendations</h2>
+                <form id="kg-form">
+                    <div class="form-group">
+                        <label>Underlying Diseases (Select all that apply)</label>
+                        <select id="diseases" multiple>
+                            <option value="Diabetes">Diabetes</option>
+                            <option value="Hypertension">Hypertension</option>
+                            <option value="Obesity">Obesity</option>
+                            <option value="Heart Disease">Heart Disease</option>
+                            <option value="High Cholesterol">High Cholesterol</option>
+                        </select>
+                        <small style="color: #666; margin-top: 5px; display: block;">
+                            Hold Ctrl/Cmd to select multiple
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Allergies (Comma-separated)</label>
+                        <input type="text" id="allergies" placeholder="e.g., Peanuts, Shellfish, Dairy">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Recommendations</label>
+                        <input type="number" id="limit" value="10" min="1" max="50">
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="btn btn-primary" onclick="getRecommendations()">
+                            Get Recommendations
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="loadDiseases()">
+                            Load All Diseases
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="initializeGraph()" th:if="${!connected}">
+                            Initialize Graph
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="results-container" class="results-container" style="display: none;">
+                <h2>Recommendations</h2>
+                <div id="results-content"></div>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <p>Loading recommendations...</p>
+            </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+    </main>
+
+    <script>
+        async function getRecommendations() {
+            const diseases = Array.from(document.getElementById('diseases').selectedOptions)
+                .map(opt => opt.value);
+            const allergies = document.getElementById('allergies').value
+                .split(',')
+                .map(a => a.trim())
+                .filter(a => a.length > 0);
+            const limit = parseInt(document.getElementById('limit').value);
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/kg/recommend', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        userId: 'user_' + Date.now(),
+                        diseases: diseases,
+                        allergies: allergies,
+                        limit: limit
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.message || 'Failed to get recommendations');
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('results-content');
+            container.innerHTML = '';
+
+            if (data.recommendations && data.recommendations.length > 0) {
+                data.recommendations.forEach((rec, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'recommendation-card';
+                    card.innerHTML = `
+                        <h3>#${index + 1}: ${rec.food}</h3>
+                        <div class="cost">Total Cost: ${rec.totalCost.toFixed(2)}</div>
+                        <div class="info">
+                            Lower cost = Better suitability<br>
+                            This food has minimal negative associations with your conditions
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 10px;" 
+                                onclick="getFoodDetails('${rec.food}')">
+                            View Details
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = '<p>No recommendations found. Try adjusting your criteria.</p>';
+            }
+
+            document.getElementById('results-container').style.display = 'block';
+        }
+
+        async function getFoodDetails(foodName) {
+            try {
+                const response = await fetch(`/api/kg/food/${encodeURIComponent(foodName)}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`Food: ${data.name}\n\n` +
+                          `Diseases: ${JSON.stringify(data.diseases, null, 2)}\n\n` +
+                          `Nutrients: ${JSON.stringify(data.nutrients, null, 2)}\n\n` +
+                          `Health Outcomes: ${data.healthOutcomes.join(', ')}`);
+                }
+            } catch (error) {
+                alert('Error loading food details: ' + error.message);
+            }
+        }
+
+        async function loadDiseases() {
+            try {
+                const response = await fetch('/api/kg/diseases');
+                const diseases = await response.json();
+
+                const select = document.getElementById('diseases');
+                select.innerHTML = '';
+                diseases.forEach(disease => {
+                    const option = document.createElement('option');
+                    option.value = disease;
+                    option.textContent = disease;
+                    select.appendChild(option);
+                });
+
+                alert(`Loaded ${diseases.length} diseases`);
+            } catch (error) {
+                showError('Error loading diseases: ' + error.message);
+            }
+        }
+
+        async function initializeGraph() {
+            if (!confirm('This will import all Food4healthKG data. This may take several minutes. Continue?')) {
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerHTML = '<p>Initializing knowledge graph... This may take a few minutes.</p>';
+
+            try {
+                const response = await fetch('/api/kg/initialize', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Knowledge graph initialized successfully!');
+                    location.reload();
+                } else {
+                    showError(data.message || 'Failed to initialize graph');
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Load diseases on page load
+        window.addEventListener('load', () => {
+            loadDiseases();
+        });
+    </script>
+</body>
+</html>
+
