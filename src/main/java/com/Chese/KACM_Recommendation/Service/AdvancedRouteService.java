@@ -3,6 +3,7 @@ package com.Chese.KACM_Recommendation.Service;
 import com.Chese.KACM_Recommendation.Config.Restaurant;
 import com.Chese.KACM_Recommendation.algorithms.*;
 import com.Chese.KACM_Recommendation.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -80,6 +81,9 @@ public class AdvancedRouteService {
         }
     }
     
+    @Autowired(required = false)
+    private OSRMRoutingService osrmRoutingService;
+    
     /**
      * 1. Time-dependent routing (traffic-aware)
      */
@@ -90,13 +94,46 @@ public class AdvancedRouteService {
             timeDependentGraph, from, to, departureHour, Restaurant.locations
         );
         
-        // Calculate congestion info
+        // Convert to actual road route using OSRM if available
+        if (osrmRoutingService != null && path.size() >= 2) {
+            try {
+                List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
+                if (roadPath != null && roadPath.size() > 2) {
+                    path = roadPath;
+                }
+            } catch (Exception e) {
+                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+            }
+        }
+        
+        // Calculate congestion info with segment details
+        Map<String, Object> congestionInfo = calculateCongestionInfo(path, departureHour);
+        List<Map<String, Object>> trafficSegments = calculateTrafficSegments(path, departureHour);
+        
         Map<String, Object> result = new HashMap<>();
         result.put("path", path);
         result.put("departureHour", departureHour);
-        result.put("congestionInfo", calculateCongestionInfo(path, departureHour));
+        result.put("congestionInfo", congestionInfo);
+        result.put("trafficInfo", Map.of("segments", trafficSegments));
         
         return result;
+    }
+    
+    /**
+     * Convert path to actual road route using OSRM
+     */
+    private List<LocationCoordinate> convertPathToRoadRoute(List<LocationCoordinate> path) {
+        if (osrmRoutingService != null && path != null && path.size() >= 2) {
+            try {
+                List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
+                if (roadPath != null && roadPath.size() > 2) {
+                    return roadPath;
+                }
+            } catch (Exception e) {
+                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+            }
+        }
+        return path;
     }
     
     /**
@@ -127,6 +164,9 @@ public class AdvancedRouteService {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
         
+        // Convert to actual road route
+        path = convertPathToRoadRoute(path);
+        
         Map<String, Object> result = new HashMap<>();
         result.put("path", path);
         result.put("method", "CCH");
@@ -154,7 +194,9 @@ public class AdvancedRouteService {
             Map<String, Object> map = new HashMap<>();
             map.put("restaurantId", poi.getRestaurantId());
             map.put("travelTime", poi.getTravelTime());
-            map.put("path", poi.getPath());
+            // Convert path to actual road route
+            List<LocationCoordinate> roadPath = convertPathToRoadRoute(poi.getPath());
+            map.put("path", roadPath);
             return map;
         }).collect(Collectors.toList());
     }
@@ -171,7 +213,9 @@ public class AdvancedRouteService {
         
         return paretoRoutes.stream().map(route -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("path", route.getRoute().getPath());
+            // Convert path to actual road route
+            List<LocationCoordinate> roadPath = convertPathToRoadRoute(route.getRoute().getPath());
+            map.put("path", roadPath);
             map.put("criteria", route.getRoute().getCriteria());
             map.put("description", route.getRoute().getDescription());
             return map;
@@ -190,7 +234,9 @@ public class AdvancedRouteService {
         
         return paths.stream().map(path -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("path", path.getPath());
+            // Convert path to actual road route
+            List<LocationCoordinate> roadPath = convertPathToRoadRoute(path.getPath());
+            map.put("path", roadPath);
             map.put("travelTime", path.getCriteria().getTravelTime());
             map.put("description", path.getDescription());
             return map;
@@ -277,6 +323,44 @@ public class AdvancedRouteService {
         }
         
         return new ArrayList<>();
+    }
+    
+    /**
+     * Calculate traffic segments for visualization
+     */
+    private List<Map<String, Object>> calculateTrafficSegments(List<LocationCoordinate> path, int departureHour) {
+        List<Map<String, Object>> segments = new ArrayList<>();
+        
+        if (path.size() < 2) return segments;
+        
+        boolean isRushHour = (departureHour >= 7 && departureHour <= 9) || 
+                            (departureHour >= 17 && departureHour <= 19);
+        
+        // Divide path into segments (every 2-3 points)
+        int segmentSize = Math.max(2, path.size() / 5); // 5 segments max
+        
+        for (int i = 0; i < path.size() - 1; i += segmentSize) {
+            int endIndex = Math.min(i + segmentSize, path.size() - 1);
+            
+            // Calculate congestion for this segment
+            double congestion = 0.0;
+            if (isRushHour) {
+                // Higher congestion during rush hour
+                congestion = 0.3 + Math.random() * 0.5; // 30-80% congestion
+            } else {
+                // Lower congestion during normal hours
+                congestion = Math.random() * 0.3; // 0-30% congestion
+            }
+            
+            Map<String, Object> segmentInfo = new HashMap<>();
+            segmentInfo.put("length", endIndex - i + 1);
+            segmentInfo.put("congestion", congestion);
+            segmentInfo.put("startIndex", i);
+            segmentInfo.put("endIndex", endIndex);
+            segments.add(segmentInfo);
+        }
+        
+        return segments;
     }
     
     private Map<String, Object> calculateCongestionInfo(List<LocationCoordinate> path, int departureHour) {

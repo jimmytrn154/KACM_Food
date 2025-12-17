@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geocode Restaurants - Get Real Positions</title>
+    <link rel="stylesheet" th:href="@{/test.css}" />
+    <link rel="stylesheet" th:href="@{/sidebar.css}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .geocode-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .geocode-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .geocode-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .action-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .results-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .restaurant-item {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .restaurant-item.success {
+            border-left-color: #27ae60;
+        }
+        
+        .restaurant-item.failed {
+            border-left-color: #e74c3c;
+        }
+        
+        .restaurant-info {
+            flex: 1;
+        }
+        
+        .restaurant-info h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .restaurant-info .coords {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .single-geocode {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .single-geocode input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a th:href="@{/index}" class="nav-logo">
+            <img th:src="@{/images/Icon1.png}" alt="KACM Logo" class="logo-img">
+            <span class="text">KACM</span>
+        </a>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a th:href="@{/index}" class="nav-link">
+                    <span class="material-icons">home</span>
+                    <span class="text">Main</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a th:href="@{/geocode}" class="nav-link">
+                    <span class="material-icons">place</span>
+                    <span class="text">Geocode</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="geocode-container">
+            <div class="geocode-header">
+                <h1>📍 Geocode Restaurants</h1>
+                <p>Get real positions for all restaurants using OpenStreetMap API</p>
+            </div>
+
+            <div class="info-box">
+                <h4>How it works:</h4>
+                <ul>
+                    <li>Uses <strong>OpenStreetMap Nominatim API</strong> (free, no API key required)</li>
+                    <li>Searches for restaurant names in Gia Lâm, Hanoi area</li>
+                    <li>Updates restaurant coordinates with real positions</li>
+                    <li>Rate limited to 1 request per second (Nominatim requirement)</li>
+                </ul>
+            </div>
+
+            <div class="action-section">
+                <h2>Actions</h2>
+                
+                <div class="single-geocode">
+                    <input type="text" id="restaurant-name" placeholder="Enter restaurant name (e.g., Pho24)">
+                    <button class="btn btn-primary" onclick="geocodeSingle()">Geocode Single</button>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <button class="btn btn-success" onclick="geocodeAll()">
+                        🌍 Geocode All Restaurants
+                    </button>
+                    <button class="btn btn-primary" onclick="getCurrentPositions()">
+                        📋 View Current Positions
+                    </button>
+                </div>
+            </div>
+
+            <div id="stats-container" class="stats" style="display: none;"></div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <p>⏳ Geocoding restaurants... This may take a few minutes.</p>
+                <p style="font-size: 12px; color: #999;">Rate limited to 1 request per second</p>
+            </div>
+
+            <div id="results-container" class="results-container" style="display: none;">
+                <h2>Results</h2>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function geocodeSingle() {
+            const name = document.getElementById('restaurant-name').value.trim();
+            if (!name) {
+                alert('Please enter a restaurant name');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/geocode/restaurant?name=${encodeURIComponent(name)}&city=Gia Lâm`);
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results-container').style.display = 'block';
+
+                const content = document.getElementById('results-content');
+                if (data.success) {
+                    content.innerHTML = `
+                        <div class="restaurant-item success">
+                            <div class="restaurant-info">
+                                <h4>${data.name}</h4>
+                                <div class="coords">📍 ${data.lat.toFixed(6)}, ${data.lon.toFixed(6)}</div>
+                            </div>
+                            <div>✅ Found</div>
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div class="restaurant-item failed">
+                            <div class="restaurant-info">
+                                <h4>${name}</h4>
+                                <div class="coords">❌ ${data.message || 'Not found'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function geocodeAll() {
+            if (!confirm('This will geocode all restaurants. This may take several minutes. Continue?')) {
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('stats-container').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/geocode/all-restaurants', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results-container').style.display = 'block';
+                document.getElementById('stats-container').style.display = 'block';
+
+                // Display stats
+                const statsContainer = document.getElementById('stats-container');
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${data.total}</div>
+                        <div class="stat-label">Total Restaurants</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #27ae60;">${data.success}</div>
+                        <div class="stat-label">Successfully Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #e74c3c;">${data.failed}</div>
+                        <div class="stat-label">Not Found</div>
+                    </div>
+                `;
+
+                // Display results
+                const content = document.getElementById('results-content');
+                content.innerHTML = '<h3>Geocoding Results:</h3>';
+                
+                data.results.forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = `restaurant-item ${result.success ? 'success' : 'failed'}`;
+                    
+                    if (result.success) {
+                        item.innerHTML = `
+                            <div class="restaurant-info">
+                                <h4>${result.name} (${result.id})</h4>
+                                <div class="coords">📍 ${result.lat.toFixed(6)}, ${result.lon.toFixed(6)}</div>
+                            </div>
+                            <div>✅ Found</div>
+                        `;
+                    } else {
+                        item.innerHTML = `
+                            <div class="restaurant-info">
+                                <h4>${result.name} (${result.id})</h4>
+                                <div class="coords">❌ ${result.message || 'Not found'}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    content.appendChild(item);
+                });
+
+                alert(`Geocoding complete!\n\n${data.success} restaurants found\n${data.failed} not found\n\nPositions have been updated in the system.`);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function getCurrentPositions() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/geocode/current-positions');
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results-container').style.display = 'block';
+
+                const content = document.getElementById('results-content');
+                content.innerHTML = `<h3>Current Positions (${data.count} restaurants):</h3>`;
+
+                data.restaurants.forEach(restaurant => {
+                    const item = document.createElement('div');
+                    item.className = 'restaurant-item';
+                    item.innerHTML = `
+                        <div class="restaurant-info">
+                            <h4>${restaurant.name} (${restaurant.id})</h4>
+                            <div class="coords">📍 ${restaurant.lat.toFixed(6)}, ${restaurant.lon.toFixed(6)}</div>
+                        </div>
+                    `;
+                    content.appendChild(item);
+                });
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Allow Enter key to trigger geocode
+        document.getElementById('restaurant-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                geocodeSingle();
+            }
+        });
+    </script>
+</body>
+</html>
+

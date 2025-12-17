@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KACM Food Recommendation - Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            padding: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .slide h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .slide h3 {
+            font-size: 1.8em;
+            margin: 20px 0 10px 0;
+            color: #87ceeb;
+        }
+        
+        .slide p, .slide li {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+        
+        .slide ul {
+            margin-left: 40px;
+            margin-top: 20px;
+        }
+        
+        .slide code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid #fff;
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+        }
+        
+        .title-slide {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .title-slide h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .title-slide .subtitle {
+            font-size: 1.5em;
+            margin: 20px 0;
+            opacity: 0.9;
+        }
+        
+        .team-list {
+            margin-top: 40px;
+            font-size: 1.2em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .architecture-diagram {
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            line-height: 2;
+            margin: 20px 0;
+        }
+        
+        .highlight {
+            background: rgba(255,215,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-number">
+        <span id="current-slide">1</span> / <span id="total-slides">21</span>
+    </div>
+    
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <h1>🍽️ KACM Food Recommendation System</h1>
+            <div class="subtitle">Advanced Routing & Knowledge Graph Integration</div>
+            <div class="team-list">
+                <p><strong>Team Members:</strong></p>
+                <p>Nguyen Van Duy Anh</p>
+                <p>Tran Anh Chuong</p>
+                <p>Duong Hien Chi Kien</p>
+            </div>
+            <div class="subtitle" style="margin-top: 40px;">
+                Technologies: Spring Boot, Neo4j, Graph Algorithms
+            </div>
+        </div>
+        
+        <!-- Slide 2: Overview -->
+        <div class="slide">
+            <h1>What is KACM?</h1>
+            <h2>A Smart Food Recommendation Platform</h2>
+            <ul>
+                <li>🍽️ Personalized food recommendations</li>
+                <li>🗺️ Intelligent route planning</li>
+                <li>🧠 Knowledge graph-based suggestions</li>
+                <li>🎯 Multi-criteria optimization</li>
+            </ul>
+            <h3>Key Features:</h3>
+            <ul>
+                <li>User authentication & preferences</li>
+                <li>Dietary restriction handling</li>
+                <li>Traffic-aware routing</li>
+                <li>Disease-aware recommendations</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 3: Architecture -->
+        <div class="slide">
+            <h1>System Architecture</h1>
+            <div class="architecture-diagram">
+┌─────────────┐
+│   Frontend  │  Thymeleaf Templates
+│  (Browser)  │  + Leaflet.js Maps
+└──────┬──────┘
+       │
+┌──────▼──────────────────┐
+│   Spring Boot Backend   │
+│  ┌────────────────────┐ │
+│  │  Controllers       │ │
+│  │  Services          │ │
+│  │  Algorithms       │ │
+│  └────────────────────┘ │
+└──────┬──────────────────┘
+       │
+┌──────▼──────┐
+│   Neo4j     │  Knowledge Graph
+│   Cloud     │  (Food4healthKG)
+└─────────────┘
+            </div>
+        </div>
+        
+        <!-- Slide 4: Core Features -->
+        <div class="slide">
+            <h1>Core Features</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>1. Food Recommendations</h3>
+                    <ul>
+                        <li>Tag-based matching</li>
+                        <li>Dietary preferences</li>
+                        <li>Allergy filtering</li>
+                        <li>Max-heap scoring</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>2. Route Planning</h3>
+                    <ul>
+                        <li>Shortest path calculation</li>
+                        <li>Restaurant mapping</li>
+                        <li>Distance calculation</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>3. User Management</h3>
+                    <ul>
+                        <li>Registration & Login</li>
+                        <li>Session management</li>
+                        <li>Preference storage</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Advanced Routing 1 -->
+        <div class="slide">
+            <h1>Advanced Routing Features</h1>
+            <h2>1. Time-Dependent Routing</h2>
+            <ul>
+                <li><span class="highlight">Traffic-aware paths</span></li>
+                <li>Rush hour detection (7-9 AM, 5-7 PM)</li>
+                <li>Dynamic edge weights: <code>w_e(t) = length / speed_e(t)</code></li>
+                <li>Algorithm: <strong>Time-Dependent Dijkstra</strong></li>
+            </ul>
+            <h2>2. Customizable Routing (CCH/CRP)</h2>
+            <ul>
+                <li><span class="highlight">Fast preference updates</span></li>
+                <li>Contraction Hierarchies</li>
+                <li>Real-time customization</li>
+                <li><strong>6.94x faster</strong> than standard Dijkstra</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 6: Advanced Routing 2 -->
+        <div class="slide">
+            <h1>More Routing Features</h1>
+            <h2>3. Top-K POI Search</h2>
+            <ul>
+                <li><span class="highlight">Nearest restaurants by travel time</span></li>
+                <li>Not Euclidean distance!</li>
+                <li>Multi-source Dijkstra</li>
+                <li>Search frontier visualization</li>
+            </ul>
+            <h2>4. Multi-Criteria Routing</h2>
+            <ul>
+                <li><span class="highlight">Pareto-optimal paths</span></li>
+                <li>Multiple objectives:
+                    <ul>
+                        <li>Travel time</li>
+                        <li>Highway avoidance</li>
+                        <li>Scenic routes</li>
+                        <li>Safety scores</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Slide 7: Advanced Routing 3 -->
+        <div class="slide">
+            <h1>Route Alternatives</h1>
+            <h2>5. K-Shortest Paths</h2>
+            <ul>
+                <li><span class="highlight">Multiple route options</span></li>
+                <li>Yen's Algorithm</li>
+                <li>Ranked by travel time</li>
+                <li>User choice & explainability</li>
+            </ul>
+            <h3>Example Routes:</h3>
+            <ul>
+                <li>🚀 Fastest</li>
+                <li>🛣️ Avoid Highways</li>
+                <li>🌄 Most Scenic</li>
+                <li>🛡️ Most Reliable</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 8: Knowledge Graph -->
+        <div class="slide">
+            <h1>Knowledge Graph Integration</h1>
+            <h2>Food4healthKG</h2>
+            <ul>
+                <li><span class="highlight">Heterogeneous knowledge graph</span></li>
+                <li>Food-health relationships</li>
+                <li>Evidence-based connections</li>
+                <li>Deployed on Neo4j Cloud</li>
+            </ul>
+            <h3>Node Types:</h3>
+            <ul>
+                <li>Food, Disease, Nutrient</li>
+                <li>Compound, Microbiota</li>
+                <li>HealthOutcome</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 9: KG Algorithm -->
+        <div class="slide">
+            <h1>Graph-Based Recommendations</h1>
+            <h2>Dijkstra's Algorithm on Knowledge Graph</h2>
+            <div class="architecture-diagram">
+User → Disease → Food → HealthOutcome
+  ↓       ↓        ↓         ↓
+ 10    +10/-3    -5        -5
+            </div>
+            <h3>Weight System:</h3>
+            <ul>
+                <li>Food → Disease (negative): <span class="highlight">+10 penalty</span></li>
+                <li>Food → Disease (positive): <span class="highlight">-3 benefit</span></li>
+                <li>Food → HealthOutcome: <span class="highlight">-5 benefit</span></li>
+            </ul>
+            <p><strong>Result:</strong> Lower totalCost = Better suitability</p>
+        </div>
+        
+        <!-- Slide 10: Technical Stack -->
+        <div class="slide">
+            <h1>Technical Stack</h1>
+            <h2>Backend:</h2>
+            <ul>
+                <li>Spring Boot 3.4.5</li>
+                <li>Java 21</li>
+                <li>Neo4j Java Driver</li>
+                <li>Maven</li>
+            </ul>
+            <h2>Frontend:</h2>
+            <ul>
+                <li>Thymeleaf</li>
+                <li>Leaflet.js (Maps)</li>
+                <li>Material Icons</li>
+                <li>Custom CSS</li>
+            </ul>
+            <h2>Algorithms:</h2>
+            <ul>
+                <li>Dijkstra's Algorithm</li>
+                <li>Time-Dependent Dijkstra</li>
+                <li>Contraction Hierarchies</li>
+                <li>Yen's K-Shortest Paths</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 11: Data Flow -->
+        <div class="slide">
+            <h1>How Recommendations Work</h1>
+            <h2>Traditional System:</h2>
+            <div class="architecture-diagram">
+User Preferences → Tag Matching → Max-Heap → Recommendations
+            </div>
+            <h2>Knowledge Graph System:</h2>
+            <div class="architecture-diagram">
+User Diseases → Graph Traversal → Dijkstra → Weighted Scores → Recommendations
+            </div>
+            <h2>Routing System:</h2>
+            <div class="architecture-diagram">
+Start/End → Graph Construction → Algorithm → Path → Map Visualization
+            </div>
+        </div>
+        
+        <!-- Slide 12: Algorithms -->
+        <div class="slide">
+            <h1>Key Algorithms</h1>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr style="background: rgba(255,255,255,0.2);">
+                    <th style="padding: 15px; text-align: left; border: 1px solid #fff;">Algorithm</th>
+                    <th style="padding: 15px; text-align: left; border: 1px solid #fff;">Use Case</th>
+                    <th style="padding: 15px; text-align: left; border: 1px solid #fff;">Complexity</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #fff;"><strong>Dijkstra</strong></td>
+                    <td style="padding: 10px; border: 1px solid #fff;">Basic shortest path</td>
+                    <td style="padding: 10px; border: 1px solid #fff;">O((V+E)log V)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #fff;"><strong>Time-Dependent Dijkstra</strong></td>
+                    <td style="padding: 10px; border: 1px solid #fff;">Traffic-aware routing</td>
+                    <td style="padding: 10px; border: 1px solid #fff;">O((V+E)log V)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #fff;"><strong>Contraction Hierarchy</strong></td>
+                    <td style="padding: 10px; border: 1px solid #fff;">Fast customizable queries</td>
+                    <td style="padding: 10px; border: 1px solid #fff;">O(V log V) preprocessing</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #fff;"><strong>Yen's Algorithm</strong></td>
+                    <td style="padding: 10px; border: 1px solid #fff;">K-shortest paths</td>
+                    <td style="padding: 10px; border: 1px solid #fff;">O(K·V·(E+V log V))</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Slide 13: Performance -->
+        <div class="slide">
+            <h1>Performance Benchmarks</h1>
+            <h2>CCH vs Standard Dijkstra</h2>
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="font-size: 3em; margin: 20px 0;">
+                    <div>Dijkstra: <span class="highlight">~1250 μs</span></div>
+                    <div style="margin-top: 20px;">CCH: <span class="highlight">~180 μs</span></div>
+                    <div style="margin-top: 30px; font-size: 1.5em;">
+                        Speedup: <span class="highlight">6.94x faster</span>
+                    </div>
+                </div>
+            </div>
+            <h3>Benefits:</h3>
+            <ul>
+                <li>Fast preference updates</li>
+                <li>No graph rebuild needed</li>
+                <li>Scalable to large networks</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 14: Demo -->
+        <div class="slide">
+            <h1>User Interface</h1>
+            <h2>Main Features:</h2>
+            <ol>
+                <li>Landing Page - Welcome screen</li>
+                <li>Login/Register - User authentication</li>
+                <li>Food Exploration - Browse all dishes</li>
+                <li>Recommendations - Personalized suggestions</li>
+                <li>KG Recommendations - Disease-aware</li>
+                <li>Advanced Routing - Interactive demo</li>
+            </ol>
+            <h2>Visual Elements:</h2>
+            <ul>
+                <li>Interactive maps</li>
+                <li>Real-time route visualization</li>
+                <li>Preference sliders</li>
+                <li>Performance charts</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 15: Use Cases -->
+        <div class="slide">
+            <h1>Real-World Applications</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>For Users:</h3>
+                    <ul>
+                        <li>Find suitable foods for health conditions</li>
+                        <li>Discover new restaurants</li>
+                        <li>Plan optimal routes</li>
+                        <li>Avoid traffic congestion</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>For Restaurants:</h3>
+                    <ul>
+                        <li>Understand customer preferences</li>
+                        <li>Optimize delivery routes</li>
+                        <li>Health-conscious menu planning</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>For Healthcare:</h3>
+                    <ul>
+                        <li>Dietary recommendations</li>
+                        <li>Disease management</li>
+                        <li>Nutritional planning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 16: Innovation -->
+        <div class="slide">
+            <h1>What Makes This Special?</h1>
+            <h2>1. Dual Recommendation Systems</h2>
+            <ul>
+                <li>Traditional tag-based</li>
+                <li>Knowledge graph-based</li>
+                <li>User can choose</li>
+            </ul>
+            <h2>2. Modern Routing Algorithms</h2>
+            <ul>
+                <li>Not just basic Dijkstra</li>
+                <li>Traffic-aware, multi-criteria</li>
+                <li>Production-ready techniques</li>
+            </ul>
+            <h2>3. Graph-Based Intelligence</h2>
+            <ul>
+                <li>Evidence-based recommendations</li>
+                <li>Disease-aware filtering</li>
+                <li>Health outcome optimization</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 17: Challenges -->
+        <div class="slide">
+            <h1>Technical Challenges</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Challenge 1: Neo4j GDS Library</h3>
+                    <p><strong>Problem:</strong> Free tier doesn't include GDS</p>
+                    <p><strong>Solution:</strong> Cypher-based fallback algorithm</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Challenge 2: Large Graph Import</h3>
+                    <p><strong>Problem:</strong> Food4healthKG has thousands of nodes</p>
+                    <p><strong>Solution:</strong> Efficient CSV loading with error handling</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Challenge 3: Real-Time Updates</h3>
+                    <p><strong>Problem:</strong> Preference changes need fast response</p>
+                    <p><strong>Solution:</strong> CCH allows instant customization</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 18: Results -->
+        <div class="slide">
+            <h1>Results & Metrics</h1>
+            <h2>Recommendation Quality:</h2>
+            <ul>
+                <li>✅ Accurate disease filtering</li>
+                <li>✅ Allergy avoidance</li>
+                <li>✅ Preference matching</li>
+            </ul>
+            <h2>Routing Performance:</h2>
+            <ul>
+                <li>✅ 6.94x faster with CCH</li>
+                <li>✅ Traffic-aware paths</li>
+                <li>✅ Multiple route alternatives</li>
+            </ul>
+            <h2>User Experience:</h2>
+            <ul>
+                <li>✅ Intuitive interface</li>
+                <li>✅ Real-time updates</li>
+                <li>✅ Interactive visualizations</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 19: Future -->
+        <div class="slide">
+            <h1>Future Enhancements</h1>
+            <h2>Short Term:</h2>
+            <ul>
+                <li>Real-time traffic data integration</li>
+                <li>Machine learning for preference learning</li>
+                <li>Mobile app development</li>
+            </ul>
+            <h2>Long Term:</h2>
+            <ul>
+                <li>Full CH implementation with node contraction</li>
+                <li>ALT (A* with Landmarks) for faster queries</li>
+                <li>Dynamic graph updates</li>
+                <li>Multi-user collaborative filtering</li>
+            </ul>
+        </div>
+        
+        <!-- Slide 20: Conclusion -->
+        <div class="slide title-slide">
+            <h1>Summary</h1>
+            <h2>What We Built:</h2>
+            <ul style="text-align: left; max-width: 800px;">
+                <li>✅ Complete food recommendation system</li>
+                <li>✅ Advanced routing with 5 modern algorithms</li>
+                <li>✅ Knowledge graph integration</li>
+                <li>✅ Production-ready architecture</li>
+            </ul>
+            <h2 style="margin-top: 40px;">Key Achievements:</h2>
+            <ul style="text-align: left; max-width: 800px;">
+                <li>🎯 Multi-criteria optimization</li>
+                <li>🚀 High-performance algorithms</li>
+                <li>🧠 Evidence-based recommendations</li>
+                <li>🗺️ Intelligent route planning</li>
+            </ul>
+            <div style="margin-top: 60px; font-size: 2em;">Thank You! 🙏</div>
+        </div>
+        
+        <!-- Slide 21: Q&A -->
+        <div class="slide title-slide">
+            <h1>Questions?</h1>
+            <div style="margin-top: 60px; font-size: 1.5em;">
+                <p><strong>Contact:</strong></p>
+                <p>Project Repository: GitHub</p>
+                <p>Demo: http://localhost:8080</p>
+            </div>
+            <div style="margin-top: 60px; font-size: 1.2em;">
+                <p><strong>Documentation:</strong></p>
+                <p>• ADVANCED_ROUTING_FEATURES.md</p>
+                <p>• KNOWLEDGE_GRAPH_SETUP.md</p>
+                <p>• INTEGRATION_SUMMARY.md</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" onclick="previousSlide()">← Previous</button>
+        <button class="btn" onclick="nextSlide()">Next →</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+        
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                previousSlide();
+            }
+        });
+    </script>
+</body>
+</html>
+

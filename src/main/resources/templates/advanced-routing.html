@@ -277,10 +277,19 @@
         <!-- Feature 1: Time-Dependent Routing -->
         <div class="routing-divider"></div>
         <div class="feature-section">
-            <h2>1. Time-Dependent Routing (Traffic-Aware)</h2>
+            <h2>1. Time-Dependent Routing (Traffic-Aware) 🚦</h2>
             <p style="margin-bottom: 15px; color: #666;">
-                See how departure time affects the route due to traffic congestion during rush hours.
+                <strong>See how departure time affects the route!</strong> Compare routes at different times to see traffic-aware routing in action.
             </p>
+            
+            <!-- Comparison Mode Toggle -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #e8f4f8; border-radius: 5px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="comparison-mode" onchange="toggleComparisonMode()" style="margin-right: 10px; width: 20px; height: 20px;">
+                    <strong>Enable Side-by-Side Comparison</strong> - Compare routes at different times simultaneously
+                </label>
+            </div>
+            
             <div class="controls">
                 <div class="control-group">
                     <label>From:</label>
@@ -290,23 +299,132 @@
                 </div>
                 <div class="control-group">
                     <label>To:</label>
-                    <select id="td-to">
-                        <option value="f1">Pho24 (f1)</option>
-                        <option value="f2">BunChaHaNoi (f2)</option>
-                        <option value="f3">Oliver's Pizza (f3)</option>
+                    <select id="td-to" style="width: 100%;">
+                        <optgroup label="Vietnamese Cuisine">
+                            <option value="f1">Pho24</option>
+                            <option value="f2">BunChaHaNoi</option>
+                            <option value="f6">Phở Bò Gia Truyền</option>
+                            <option value="f9">ComTam</option>
+                            <option value="r1">Bún Bò Huế</option>
+                            <option value="r2">Bánh Mì Phố</option>
+                            <option value="r3">Chả Cá Lã Vọng</option>
+                            <option value="r4">Bún Riêu Cua</option>
+                            <option value="r5">Phở Gà</option>
+                        </optgroup>
+                        <optgroup label="International">
+                            <option value="f3">Oliver's Pizza</option>
+                            <option value="r6">KFC Gia Lâm</option>
+                            <option value="r7">Lotteria</option>
+                            <option value="r8">Pizza Hut</option>
+                            <option value="r9">McDonald's</option>
+                            <option value="r10">Burger King</option>
+                        </optgroup>
+                        <optgroup label="Asian Cuisine">
+                            <option value="r11">Sushi Hokkaido</option>
+                            <option value="r12">Korean BBQ House</option>
+                            <option value="r13">Thai Express</option>
+                            <option value="r14">Ramen Ichiban</option>
+                            <option value="r15">Dim Sum Palace</option>
+                        </optgroup>
+                        <optgroup label="Coffee & Desserts">
+                            <option value="r16">Highlands Coffee</option>
+                            <option value="r17">Starbucks</option>
+                            <option value="r18">The Coffee House</option>
+                            <option value="r19">Trà Sữa Gong Cha</option>
+                            <option value="r20">Bingsu Dessert</option>
+                        </optgroup>
+                        <optgroup label="Fine Dining">
+                            <option value="f4">Le Champ</option>
+                            <option value="r21">La Villa French Restaurant</option>
+                            <option value="r22">Ngon Garden</option>
+                            <option value="r23">Madame Hien</option>
+                        </optgroup>
+                        <optgroup label="Local Favorites">
+                            <option value="r24">Bánh Cuốn Thanh Trì</option>
+                            <option value="r25">Bún Đậu Mắm Tôm</option>
+                            <option value="r26">Cháo Sườn</option>
+                            <option value="r27">Bánh Xèo</option>
+                            <option value="r28">Nem Nướng Nha Trang</option>
+                        </optgroup>
+                        <optgroup label="Seafood">
+                            <option value="r29">Hải Sản Biển Đông</option>
+                            <option value="r30">Cua Biển Restaurant</option>
+                        </optgroup>
+                        <optgroup label="Hotpot & BBQ">
+                            <option value="r31">Lẩu Thái</option>
+                            <option value="r32">BBQ House</option>
+                            <option value="r33">Nướng Ngon</option>
+                        </optgroup>
+                        <optgroup label="Vegetarian">
+                            <option value="r34">Chay Ngon</option>
+                            <option value="r35">Vegetarian Garden</option>
+                        </optgroup>
+                        <optgroup label="Fast Food">
+                            <option value="r36">Bánh Mì Ông Già</option>
+                            <option value="r37">Xôi Gà</option>
+                            <option value="r38">Bánh Tráng Trộn</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="control-group">
                     <label>Departure Hour:</label>
-                    <input type="number" id="td-hour" min="0" max="23" value="8">
+                    <input type="range" id="td-hour-slider" min="0" max="23" value="8" 
+                           oninput="updateHourDisplay(this.value); getTimeDependentRoute()" 
+                           style="width: 200px;">
+                    <span id="hour-display" style="font-weight: 600; color: #3498db; margin-left: 10px;">8:00</span>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                        <span style="color: #e74c3c;">🔴 Rush Hour: 7-9 AM, 5-7 PM</span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label>&nbsp;</label>
                     <button onclick="getTimeDependentRoute()">Get Route</button>
+                    <button onclick="compareTimes()" style="margin-left: 10px; background: #27ae60;">Compare Times</button>
                 </div>
             </div>
-            <div id="td-map" class="map-container"></div>
-            <div id="td-results" class="results" style="display: none;"></div>
+            
+            <!-- Quick Time Buttons -->
+            <div style="margin: 15px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="setTimeAndRoute(6)" class="time-btn" style="background: #27ae60;">6 AM (Before Rush)</button>
+                <button onclick="setTimeAndRoute(8)" class="time-btn" style="background: #e74c3c;">8 AM (Rush Hour)</button>
+                <button onclick="setTimeAndRoute(12)" class="time-btn" style="background: #27ae60;">12 PM (Normal)</button>
+                <button onclick="setTimeAndRoute(17)" class="time-btn" style="background: #e74c3c;">5 PM (Rush Hour)</button>
+                <button onclick="setTimeAndRoute(20)" class="time-btn" style="background: #27ae60;">8 PM (Normal)</button>
+            </div>
+            
+            <!-- Comparison Container -->
+            <div id="comparison-container" style="display: none;">
+                <h3 style="margin: 20px 0 10px 0;">Side-by-Side Comparison</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h4>Route at <span id="time1-display">8:00</span></h4>
+                        <div id="td-map-compare1" class="map-container" style="height: 300px;"></div>
+                        <div id="td-results-compare1" class="results"></div>
+                    </div>
+                    <div>
+                        <h4>Route at <span id="time2-display">12:00</span></h4>
+                        <div id="td-map-compare2" class="map-container" style="height: 300px;"></div>
+                        <div id="td-results-compare2" class="results"></div>
+                    </div>
+                </div>
+                <div id="comparison-stats" style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 5px;"></div>
+            </div>
+            
+            <!-- Single Map View -->
+            <div id="single-map-container">
+                <div id="td-map" class="map-container"></div>
+                <div id="td-results" class="results" style="display: none;"></div>
+            </div>
+            
+            <!-- Traffic Legend -->
+            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                <strong>Traffic Legend:</strong>
+                <div style="display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap;">
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #27ae60; border-radius: 3px; margin-right: 5px;"></span> Normal Traffic</div>
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #f39c12; border-radius: 3px; margin-right: 5px;"></span> Moderate Congestion</div>
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #e74c3c; border-radius: 3px; margin-right: 5px;"></span> Heavy Traffic (Rush Hour)</div>
+                </div>
+            </div>
         </div>
         
         <!-- Feature 2: Customizable Routing -->
@@ -325,9 +443,24 @@
                 </div>
                 <div class="control-group">
                     <label>To:</label>
-                    <select id="ch-to">
-                        <option value="f1">Pho24 (f1)</option>
-                        <option value="f2">BunChaHaNoi (f2)</option>
+                    <select id="ch-to" style="width: 100%;">
+                        <optgroup label="Vietnamese Cuisine">
+                            <option value="f1">Pho24</option>
+                            <option value="f2">BunChaHaNoi</option>
+                            <option value="f6">Phở Bò Gia Truyền</option>
+                            <option value="f9">ComTam</option>
+                            <option value="r1">Bún Bò Huế</option>
+                            <option value="r2">Bánh Mì Phố</option>
+                        </optgroup>
+                        <optgroup label="International">
+                            <option value="f3">Oliver's Pizza</option>
+                            <option value="r6">KFC Gia Lâm</option>
+                            <option value="r9">McDonald's</option>
+                        </optgroup>
+                        <optgroup label="Coffee & Desserts">
+                            <option value="r16">Highlands Coffee</option>
+                            <option value="r17">Starbucks</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>
@@ -394,8 +527,16 @@
                 </div>
                 <div class="control-group">
                     <label>To:</label>
-                    <select id="pareto-to">
-                        <option value="f1">Pho24 (f1)</option>
+                    <select id="pareto-to" style="width: 100%;">
+                        <optgroup label="Popular Restaurants">
+                            <option value="f1">Pho24</option>
+                            <option value="f2">BunChaHaNoi</option>
+                            <option value="f3">Oliver's Pizza</option>
+                            <option value="r16">Highlands Coffee</option>
+                            <option value="r17">Starbucks</option>
+                            <option value="r6">KFC Gia Lâm</option>
+                            <option value="r9">McDonald's</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="control-group">
@@ -423,8 +564,16 @@
                 </div>
                 <div class="control-group">
                     <label>To:</label>
-                    <select id="ksp-to">
-                        <option value="f1">Pho24 (f1)</option>
+                    <select id="ksp-to" style="width: 100%;">
+                        <optgroup label="Popular Restaurants">
+                            <option value="f1">Pho24</option>
+                            <option value="f2">BunChaHaNoi</option>
+                            <option value="f3">Oliver's Pizza</option>
+                            <option value="r16">Highlands Coffee</option>
+                            <option value="r17">Starbucks</option>
+                            <option value="r6">KFC Gia Lâm</option>
+                            <option value="r9">McDonald's</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="control-group">
@@ -456,8 +605,14 @@
                 </div>
                 <div class="control-group">
                     <label>To:</label>
-                    <select id="bench-to">
-                        <option value="f1">Pho24 (f1)</option>
+                    <select id="bench-to" style="width: 100%;">
+                        <optgroup label="Popular Restaurants">
+                            <option value="f1">Pho24</option>
+                            <option value="f2">BunChaHaNoi</option>
+                            <option value="f3">Oliver's Pizza</option>
+                            <option value="r16">Highlands Coffee</option>
+                            <option value="r17">Starbucks</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="control-group">
@@ -493,22 +648,71 @@
             }
         }
         
-        function drawPath(mapId, path, color = '#3498db', weight = 4) {
+        function drawPath(mapId, path, color = '#3498db', weight = 4, trafficInfo = null) {
             if (!maps[mapId]) initMap(mapId);
             clearMap(mapId);
             
             const latlngs = path.map(coord => [coord.lat, coord.lon]);
-            const polyline = L.polyline(latlngs, {color: color, weight: weight}).addTo(maps[mapId]);
-            layers[mapId].push(polyline);
+            
+            // Draw path with traffic-aware coloring
+            if (trafficInfo && trafficInfo.segments) {
+                // Draw segments with different colors based on traffic
+                let currentIndex = 0;
+                trafficInfo.segments.forEach((segment, idx) => {
+                    const segmentPath = path.slice(currentIndex, currentIndex + segment.length);
+                    const segmentLatlngs = segmentPath.map(coord => [coord.lat, coord.lon]);
+                    
+                    let segmentColor = '#27ae60'; // Normal
+                    if (segment.congestion > 0.5) {
+                        segmentColor = '#e74c3c'; // Heavy
+                    } else if (segment.congestion > 0.2) {
+                        segmentColor = '#f39c12'; // Moderate
+                    }
+                    
+                    const polyline = L.polyline(segmentLatlngs, {
+                        color: segmentColor, 
+                        weight: weight + 2,
+                        opacity: 0.9
+                    }).addTo(maps[mapId]);
+                    layers[mapId].push(polyline);
+                    
+                    // Add traffic indicator
+                    if (segment.congestion > 0.2 && segmentPath.length > 0) {
+                        const midPoint = segmentPath[Math.floor(segmentPath.length / 2)];
+                        const trafficIcon = L.divIcon({
+                            className: 'traffic-icon',
+                            html: `<div style="background: ${segmentColor}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold;">${Math.round(segment.congestion * 100)}%</div>`,
+                            iconSize: [40, 20]
+                        });
+                        L.marker([midPoint.lat, midPoint.lon], {icon: trafficIcon}).addTo(maps[mapId]);
+                    }
+                    
+                    currentIndex += segment.length;
+                });
+            } else {
+                // Simple path
+                const polyline = L.polyline(latlngs, {color: color, weight: weight}).addTo(maps[mapId]);
+                layers[mapId].push(polyline);
+            }
             
             // Add markers
             if (path.length > 0) {
-                const startMarker = L.marker([path[0].lat, path[0].lon])
+                const startIcon = L.divIcon({
+                    className: 'start-marker',
+                    html: '<div style="background: #27ae60; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold;">START</div>',
+                    iconSize: [60, 30]
+                });
+                const startMarker = L.marker([path[0].lat, path[0].lon], {icon: startIcon})
                     .bindPopup('Start: ' + path[0].name)
                     .addTo(maps[mapId]);
                 layers[mapId].push(startMarker);
                 
-                const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon])
+                const endIcon = L.divIcon({
+                    className: 'end-marker',
+                    html: '<div style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold;">END</div>',
+                    iconSize: [60, 30]
+                });
+                const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon], {icon: endIcon})
                     .bindPopup('End: ' + path[path.length - 1].name)
                     .addTo(maps[mapId]);
                 layers[mapId].push(endMarker);
@@ -517,42 +721,188 @@
             maps[mapId].fitBounds(latlngs);
         }
         
+        function updateHourDisplay(hour) {
+            document.getElementById('hour-display').textContent = hour + ':00';
+            const isRushHour = (hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19);
+            const display = document.getElementById('hour-display');
+            if (isRushHour) {
+                display.style.color = '#e74c3c';
+                display.textContent = hour + ':00 🔴';
+            } else {
+                display.style.color = '#27ae60';
+                display.textContent = hour + ':00';
+            }
+        }
+        
+        function setTimeAndRoute(hour) {
+            document.getElementById('td-hour-slider').value = hour;
+            updateHourDisplay(hour);
+            getTimeDependentRoute();
+        }
+        
+        function toggleComparisonMode() {
+            const enabled = document.getElementById('comparison-mode').checked;
+            document.getElementById('comparison-container').style.display = enabled ? 'block' : 'none';
+            document.getElementById('single-map-container').style.display = enabled ? 'none' : 'block';
+            if (enabled) {
+                compareTimes();
+            }
+        }
+        
+        async function compareTimes() {
+            const from = document.getElementById('td-from').value;
+            const to = document.getElementById('td-to').value;
+            const time1 = 8; // Rush hour
+            const time2 = 12; // Normal
+            
+            document.getElementById('time1-display').textContent = time1 + ':00';
+            document.getElementById('time2-display').textContent = time2 + ':00';
+            
+            try {
+                // Get route at time 1
+                const response1 = await fetch(`/api/route/time-dependent?from=${from}&to=${to}&departureHour=${time1}`);
+                const data1 = await response1.json();
+                
+                // Get route at time 2
+                const response2 = await fetch(`/api/route/time-dependent?from=${from}&to=${to}&departureHour=${time2}`);
+                const data2 = await response2.json();
+                
+                // Draw both routes
+                drawPath('td-map-compare1', data1.path, '#e74c3c', 4, data1.trafficInfo);
+                drawPath('td-map-compare2', data2.path, '#27ae60', 4, data2.trafficInfo);
+                
+                // Display results
+                displayComparisonResults(data1, data2, time1, time2);
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayComparisonResults(data1, data2, time1, time2) {
+            const congestion1 = data1.congestionInfo;
+            const congestion2 = data2.congestionInfo;
+            
+            // Calculate time difference
+            const time1Minutes = data1.path.length * 2; // Approximate
+            const time2Minutes = data2.path.length * 2;
+            const timeDiff = Math.abs(time1Minutes - time2Minutes);
+            const faster = time1Minutes < time2Minutes ? time1 : time2;
+            
+            document.getElementById('td-results-compare1').innerHTML = `
+                <div class="route-info">
+                    <strong>Departure:</strong> ${time1}:00 ${congestion1.rushHour ? '🔴 Rush Hour' : '✅ Normal'}
+                </div>
+                <div class="route-info">
+                    <strong>Congested Segments:</strong> ${congestion1.congestedSegments}
+                </div>
+                <div class="route-info">
+                    <strong>Congestion Penalty:</strong> ${(congestion1.totalCongestionPenalty * 100).toFixed(0)}%
+                </div>
+            `;
+            
+            document.getElementById('td-results-compare2').innerHTML = `
+                <div class="route-info">
+                    <strong>Departure:</strong> ${time2}:00 ${congestion2.rushHour ? '🔴 Rush Hour' : '✅ Normal'}
+                </div>
+                <div class="route-info">
+                    <strong>Congested Segments:</strong> ${congestion2.congestedSegments}
+                </div>
+                <div class="route-info">
+                    <strong>Congestion Penalty:</strong> ${(congestion2.totalCongestionPenalty * 100).toFixed(0)}%
+                </div>
+            `;
+            
+            document.getElementById('comparison-stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${timeDiff} min</div>
+                    <div class="stat-label">Time Difference</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value ${faster === time1 ? 'time-savings' : 'time-loss'}">${faster}:00</div>
+                    <div class="stat-label">Faster Departure Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.abs(congestion1.congestedSegments - congestion2.congestedSegments)}</div>
+                    <div class="stat-label">Difference in Congested Segments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.abs(congestion1.totalCongestionPenalty - congestion2.totalCongestionPenalty).toFixed(2)}</div>
+                    <div class="stat-label">Congestion Penalty Difference</div>
+                </div>
+            `;
+        }
+        
         // Feature 1: Time-Dependent Routing
         async function getTimeDependentRoute() {
             const from = document.getElementById('td-from').value;
             const to = document.getElementById('td-to').value;
-            const hour = parseInt(document.getElementById('td-hour').value);
+            const hour = parseInt(document.getElementById('td-hour-slider').value || document.getElementById('td-hour').value);
             
             try {
                 const response = await fetch(`/api/route/time-dependent?from=${from}&to=${to}&departureHour=${hour}`);
                 const data = await response.json();
                 
-                drawPath('td-map', data.path, '#e74c3c');
+                // Draw path with traffic visualization
+                const trafficColor = data.congestionInfo.rushHour ? '#e74c3c' : 
+                                    data.congestionInfo.congestedSegments > 0 ? '#f39c12' : '#27ae60';
+                drawPath('td-map', data.path, trafficColor, 5, data.trafficInfo);
                 
                 const resultsDiv = document.getElementById('td-results');
                 resultsDiv.style.display = 'block';
                 const congestion = data.congestionInfo;
                 const congestionClass = congestion.rushHour ? 'congestion-high' : 
                                        congestion.congestedSegments > 0 ? 'congestion-medium' : 'congestion-low';
+                
+                // Calculate estimated travel time
+                const baseTime = 15; // Base travel time in minutes
+                const adjustedTime = baseTime * (1 + congestion.totalCongestionPenalty);
+                
                 resultsDiv.innerHTML = `
-                    <h3>Route Information</h3>
+                    <h3>🚦 Route Information</h3>
                     <div class="route-info">
-                        <strong>Departure Hour:</strong> ${hour}:00
-                        <span class="congestion-badge ${congestionClass}">
-                            ${congestion.rushHour ? 'Rush Hour' : 'Normal Traffic'}
+                        <strong>Departure Time:</strong> ${hour}:00
+                        <span class="congestion-badge ${congestionClass}" style="margin-left: 10px;">
+                            ${congestion.rushHour ? '🔴 Rush Hour Traffic' : congestion.congestedSegments > 0 ? '🟡 Moderate Traffic' : '🟢 Normal Traffic'}
                         </span>
                     </div>
                     <div class="route-info">
-                        <strong>Congested Segments:</strong> ${congestion.congestedSegments}
+                        <strong>Estimated Travel Time:</strong> 
+                        <span style="font-size: 18px; font-weight: 700; color: ${congestion.rushHour ? '#e74c3c' : '#27ae60'};">
+                            ${Math.round(adjustedTime)} minutes
+                        </span>
+                        ${congestion.rushHour ? '<span style="color: #e74c3c;"> (+' + Math.round((adjustedTime - baseTime)) + ' min due to traffic)</span>' : ''}
                     </div>
                     <div class="route-info">
-                        <strong>Total Congestion Penalty:</strong> ${(congestion.totalCongestionPenalty * 100).toFixed(0)}%
+                        <strong>Congested Road Segments:</strong> 
+                        <span style="font-weight: 700; color: ${congestion.congestedSegments > 0 ? '#e74c3c' : '#27ae60'};">
+                            ${congestion.congestedSegments}
+                        </span>
                     </div>
+                    <div class="route-info">
+                        <strong>Total Congestion Impact:</strong> 
+                        <span style="font-weight: 700; color: ${congestion.totalCongestionPenalty > 0.3 ? '#e74c3c' : congestion.totalCongestionPenalty > 0.1 ? '#f39c12' : '#27ae60'};">
+                            ${(congestion.totalCongestionPenalty * 100).toFixed(0)}%
+                        </span>
+                    </div>
+                    ${congestion.rushHour ? `
+                    <div class="route-info" style="background: #fee; border-left: 4px solid #e74c3c;">
+                        <strong>⚠️ Rush Hour Alert:</strong> Traffic is significantly heavier during this time. 
+                        Consider leaving ${hour < 9 ? 'earlier (before 7 AM)' : 'later (after 7 PM)'} to avoid congestion.
+                    </div>
+                    ` : ''}
                 `;
             } catch (error) {
                 console.error('Error:', error);
+                alert('Error loading route. Please try again.');
             }
         }
+        
+        // Initialize hour display
+        window.addEventListener('load', () => {
+            const hour = document.getElementById('td-hour-slider').value;
+            updateHourDisplay(hour);
+        });
         
         // Feature 2: Customizable Routing
         async function getCustomizableRoute() {

@@ -2,12 +2,17 @@ package com.Chese.KACM_Recommendation.Service;
 
 import com.Chese.KACM_Recommendation.Config.Restaurant;
 import com.Chese.KACM_Recommendation.model.LocationCoordinate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class RouteService {
+    
+    @Autowired(required = false)
+    private OSRMRoutingService osrmRoutingService;
+    
     public List<LocationCoordinate> getShortestPath(String startKey, String endKey) {
         // build complete graph of keys -> weights (haversine distance)
         Map<String, Map<String, Integer>> graph = new HashMap<>();
@@ -57,6 +62,19 @@ public class RouteService {
             path.addFirst(Restaurant.locations.get(cur));
             cur = prev.get(cur);
         }
+        
+        // Convert to actual road route using OSRM if available
+        if (osrmRoutingService != null && path.size() >= 2) {
+            try {
+                List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
+                if (roadPath != null && roadPath.size() > 2) {
+                    return roadPath;
+                }
+            } catch (Exception e) {
+                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+            }
+        }
+        
         return path;
     }
 
