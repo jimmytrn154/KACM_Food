@@ -65,23 +65,34 @@ public class AdvancedRouteService {
                 criteria.setTravelTime(timeMinutes);
                 
                 // Add some variety: some edges are highways, some are scenic, etc.
+                // For scenic routes: prefer longer paths through scenic areas
                 if (distance > 2.0) {
-                    criteria.setHighwayPenalty(0.8); // Long distance = likely highway
+                    // Long distance = likely highway (avoid when scenic preference is high)
+                    criteria.setHighwayPenalty(0.8); 
                     criteria.setTollCost(distance * 0.5); // Toll cost proportional to distance
+                    criteria.setScenicScore(0.1); // Highways are not scenic
+                } else if (distance > 1.0 && distance <= 2.0) {
+                    // Medium distance = moderate scenic potential
+                    criteria.setScenicScore(0.4);
+                    criteria.setSafetyScore(0.6);
+                    criteria.setHighwayPenalty(0.3);
                 } else {
-                    criteria.setScenicScore(0.6); // Short distance = scenic route
+                    // Short distance = very scenic route (local roads, parks, etc.)
+                    criteria.setScenicScore(0.8); // High scenic score
                     criteria.setSafetyScore(0.7);
+                    criteria.setHighwayPenalty(0.1); // Not a highway
                 }
                 
-                // Random turn penalty (simplified)
-                criteria.setTurnPenalty(Math.random() * 0.3);
+                // Add some randomness to make routes vary
+                // Scenic routes should prefer paths with multiple scenic segments
+                criteria.setTurnPenalty(Math.random() * 0.2); // Lower turn penalty for scenic routes
                 
                 multiCriteriaGraph.get(u).put(v, criteria);
             }
         }
     }
     
-    @Autowired(required = false)
+    @Autowired
     private OSRMRoutingService osrmRoutingService;
     
     /**
@@ -94,15 +105,19 @@ public class AdvancedRouteService {
             timeDependentGraph, from, to, departureHour, Restaurant.locations
         );
         
-        // Convert to actual road route using OSRM if available
-        if (osrmRoutingService != null && path.size() >= 2) {
+        // Convert to actual road route using OSRM
+        if (path.size() >= 2) {
             try {
                 List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
                 if (roadPath != null && roadPath.size() > 2) {
                     path = roadPath;
+                    System.out.println("OSRM route converted: " + path.size() + " waypoints");
+                } else {
+                    System.out.println("OSRM returned insufficient points, using direct path");
                 }
             } catch (Exception e) {
-                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+                System.err.println("OSRM routing failed: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         
@@ -123,14 +138,19 @@ public class AdvancedRouteService {
      * Convert path to actual road route using OSRM
      */
     private List<LocationCoordinate> convertPathToRoadRoute(List<LocationCoordinate> path) {
-        if (osrmRoutingService != null && path != null && path.size() >= 2) {
+        if (path != null && path.size() >= 2) {
             try {
                 List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
                 if (roadPath != null && roadPath.size() > 2) {
+                    System.out.println("Converted path from " + path.size() + " to " + roadPath.size() + " waypoints");
                     return roadPath;
+                } else {
+                    System.out.println("OSRM returned insufficient points (" + 
+                        (roadPath != null ? roadPath.size() : 0) + "), using original path");
                 }
             } catch (Exception e) {
-                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+                System.err.println("OSRM routing failed: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return path;
@@ -154,7 +174,25 @@ public class AdvancedRouteService {
         ch.customize((fromNode, toNode, originalWeight) -> {
             RouteCriteria criteria = multiCriteriaGraph.get(fromNode).get(toNode);
             if (criteria == null) return originalWeight;
-            return criteria.getWeightedCost(finalPrefs);
+            
+            double cost = criteria.getWeightedCost(finalPrefs);
+            
+            // When scenicWeight is high, make the algorithm prefer longer paths
+            // by reducing cost of scenic edges more aggressively
+            if (finalPrefs.getScenicWeight() > 1.0 && criteria.getScenicScore() > 0.5) {
+                // Heavily discount scenic edges to encourage longer scenic routes
+                double scenicDiscount = (finalPrefs.getScenicWeight() - 1.0) * 0.5;
+                cost = cost * (1.0 - scenicDiscount);
+            }
+            
+            // When scenicWeight is high, heavily penalize highways to force scenic routes
+            if (finalPrefs.getScenicWeight() > 1.0 && criteria.getHighwayPenalty() > 0.5) {
+                // Make highways very expensive
+                double highwayPenalty = (finalPrefs.getScenicWeight() - 1.0) * 1.5;
+                cost = cost * (1.0 + highwayPenalty);
+            }
+            
+            return Math.max(0.1, cost); // Ensure cost is always positive
         });
         
         // Query
@@ -164,8 +202,27 @@ public class AdvancedRouteService {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
         
-        // Convert to actual road route
-        path = convertPathToRoadRoute(path);
+        // ALWAYS convert to actual road route using OSRM (even if path has only 2 points)
+        // This ensures the route follows real roads, not straight lines
+        if (path.size() >= 2 && osrmRoutingService != null) {
+            try {
+                System.out.println("CCH: Converting path with " + path.size() + " waypoints to real road route");
+                List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
+                if (roadPath != null && roadPath.size() >= 2) {
+                    System.out.println("CCH: Successfully converted to " + roadPath.size() + " waypoints (real road path)");
+                    path = roadPath;
+                } else {
+                    System.err.println("CCH: OSRM returned null or insufficient points (" + 
+                        (roadPath != null ? roadPath.size() : 0) + "), using original path");
+                }
+            } catch (Exception e) {
+                System.err.println("CCH: OSRM routing failed: " + e.getMessage());
+                e.printStackTrace();
+                // Continue with original path if OSRM fails
+            }
+        } else if (osrmRoutingService == null) {
+            System.err.println("CCH: OSRMRoutingService is not available, using original path");
+        }
         
         Map<String, Object> result = new HashMap<>();
         result.put("path", path);

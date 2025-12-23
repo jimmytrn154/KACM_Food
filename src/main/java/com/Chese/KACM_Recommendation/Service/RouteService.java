@@ -10,7 +10,7 @@ import java.util.*;
 @Service
 public class RouteService {
     
-    @Autowired(required = false)
+    @Autowired
     private OSRMRoutingService osrmRoutingService;
     
     public List<LocationCoordinate> getShortestPath(String startKey, String endKey) {
@@ -63,15 +63,19 @@ public class RouteService {
             cur = prev.get(cur);
         }
         
-        // Convert to actual road route using OSRM if available
-        if (osrmRoutingService != null && path.size() >= 2) {
+        // Convert to actual road route using OSRM
+        if (path.size() >= 2) {
             try {
                 List<LocationCoordinate> roadPath = osrmRoutingService.convertToRoadRoute(path);
                 if (roadPath != null && roadPath.size() > 2) {
+                    System.out.println("RouteService: Converted to OSRM route with " + roadPath.size() + " waypoints");
                     return roadPath;
+                } else {
+                    System.out.println("RouteService: OSRM returned insufficient points, using direct path");
                 }
             } catch (Exception e) {
-                System.err.println("OSRM routing failed, using direct path: " + e.getMessage());
+                System.err.println("RouteService: OSRM routing failed: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         

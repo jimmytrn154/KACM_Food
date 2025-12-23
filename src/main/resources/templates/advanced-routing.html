@@ -624,12 +624,15 @@
         </div>
     </div>
     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script>
         // Initialize maps
         const maps = {};
         const markers = {};
         const layers = {};
+        const routingControls = {}; // Store routing controls for each map (array for multiple routes)
         
         function initMap(id) {
             const map = L.map(id).setView([20.99, 105.945], 13);
@@ -643,82 +646,179 @@
         
         function clearMap(id) {
             if (layers[id]) {
-                layers[id].forEach(layer => maps[id].removeLayer(layer));
+                layers[id].forEach(layer => {
+                    try {
+                        if (layer instanceof L.Routing.Control || (layer && layer._container)) {
+                            maps[id].removeControl(layer);
+                        } else {
+                            maps[id].removeLayer(layer);
+                        }
+                    } catch (e) {
+                        // Ignore errors when removing layers
+                    }
+                });
                 layers[id] = [];
+            }
+            // Remove all routing controls
+            if (routingControls[id]) {
+                if (Array.isArray(routingControls[id])) {
+                    routingControls[id].forEach(control => {
+                        try {
+                            maps[id].removeControl(control);
+                        } catch (e) {}
+                    });
+                } else {
+                    try {
+                        maps[id].removeControl(routingControls[id]);
+                    } catch (e) {}
+                }
+                routingControls[id] = [];
             }
         }
         
-        function drawPath(mapId, path, color = '#3498db', weight = 4, trafficInfo = null) {
+        function drawPath(mapId, path, color = '#3498db', weight = 4, trafficInfo = null, clearFirst = true) {
             if (!maps[mapId]) initMap(mapId);
-            clearMap(mapId);
+            if (clearFirst) clearMap(mapId);
             
-            const latlngs = path.map(coord => [coord.lat, coord.lon]);
+            if (!path || path.length < 2) {
+                console.error('Invalid path provided');
+                return;
+            }
             
-            // Draw path with traffic-aware coloring
-            if (trafficInfo && trafficInfo.segments) {
-                // Draw segments with different colors based on traffic
-                let currentIndex = 0;
-                trafficInfo.segments.forEach((segment, idx) => {
-                    const segmentPath = path.slice(currentIndex, currentIndex + segment.length);
-                    const segmentLatlngs = segmentPath.map(coord => [coord.lat, coord.lon]);
-                    
-                    let segmentColor = '#27ae60'; // Normal
-                    if (segment.congestion > 0.5) {
-                        segmentColor = '#e74c3c'; // Heavy
-                    } else if (segment.congestion > 0.2) {
-                        segmentColor = '#f39c12'; // Moderate
+            // If path has many points (>10), it's likely already a real road path from OSRM
+            // Draw it as a polyline with all the detailed coordinates
+            if (path.length > 10) {
+                const latlngs = path.map(coord => [coord.lat, coord.lon]);
+                
+                // Determine route color based on traffic
+                let routeColor = color;
+                if (trafficInfo && trafficInfo.congestionInfo) {
+                    if (trafficInfo.congestionInfo.rushHour) {
+                        routeColor = '#e74c3c'; // Red for rush hour
+                    } else if (trafficInfo.congestionInfo.congestedSegments > 0) {
+                        routeColor = '#f39c12'; // Orange for moderate traffic
+                    } else {
+                        routeColor = '#27ae60'; // Green for normal
                     }
+                }
+                
+                // Draw detailed polyline with real road coordinates
+                const polyline = L.polyline(latlngs, {
+                    color: routeColor, 
+                    weight: weight, 
+                    opacity: 0.8,
+                    smoothFactor: 1.0
+                }).addTo(maps[mapId]);
+                layers[mapId].push(polyline);
+                
+                // Add markers for start and end
+                if (path.length > 0) {
+                    const startIcon = L.divIcon({
+                        className: 'start-marker',
+                        html: '<div style="background: #27ae60; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 12px;">START</div>',
+                        iconSize: [60, 30]
+                    });
+                    const startMarker = L.marker([path[0].lat, path[0].lon], {icon: startIcon})
+                        .bindPopup('Start: ' + (path[0].name || 'Start'))
+                        .addTo(maps[mapId]);
+                    layers[mapId].push(startMarker);
                     
-                    const polyline = L.polyline(segmentLatlngs, {
-                        color: segmentColor, 
-                        weight: weight + 2,
-                        opacity: 0.9
-                    }).addTo(maps[mapId]);
-                    layers[mapId].push(polyline);
-                    
-                    // Add traffic indicator
-                    if (segment.congestion > 0.2 && segmentPath.length > 0) {
-                        const midPoint = segmentPath[Math.floor(segmentPath.length / 2)];
-                        const trafficIcon = L.divIcon({
-                            className: 'traffic-icon',
-                            html: `<div style="background: ${segmentColor}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold;">${Math.round(segment.congestion * 100)}%</div>`,
-                            iconSize: [40, 20]
-                        });
-                        L.marker([midPoint.lat, midPoint.lon], {icon: trafficIcon}).addTo(maps[mapId]);
+                    const endIcon = L.divIcon({
+                        className: 'end-marker',
+                        html: '<div style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 12px;">END</div>',
+                        iconSize: [60, 30]
+                    });
+                    const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon], {icon: endIcon})
+                        .bindPopup('End: ' + (path[path.length - 1].name || 'End'))
+                        .addTo(maps[mapId]);
+                    layers[mapId].push(endMarker);
+                }
+                
+                maps[mapId].fitBounds(latlngs);
+                console.log('Drew detailed road path with ' + path.length + ' waypoints');
+                return;
+            }
+            
+            // For paths with few points (2-10), use Leaflet Routing Machine to get real roads
+            try {
+                const waypoints = path.map(coord => L.latLng(coord.lat, coord.lon));
+                
+                // Determine route color based on traffic
+                let routeColor = color;
+                if (trafficInfo && trafficInfo.congestionInfo) {
+                    if (trafficInfo.congestionInfo.rushHour) {
+                        routeColor = '#e74c3c';
+                    } else if (trafficInfo.congestionInfo.congestedSegments > 0) {
+                        routeColor = '#f39c12';
+                    } else {
+                        routeColor = '#27ae60';
                     }
-                    
-                    currentIndex += segment.length;
-                });
-            } else {
-                // Simple path
+                }
+                
+                // Create routing control with real road routing (OSRM backend)
+                const routingControl = L.Routing.control({
+                    waypoints: waypoints,
+                    routeWhileDragging: false,
+                    createMarker: function(i, wp) {
+                        if (i === 0) {
+                            return L.marker(wp.latLng, {
+                                icon: L.divIcon({
+                                    className: 'start-marker',
+                                    html: '<div style="background: #27ae60; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 12px;">START</div>',
+                                    iconSize: [60, 30]
+                                })
+                            }).bindPopup('Start: ' + (path[0].name || 'Start'));
+                        } else if (i === waypoints.length - 1) {
+                            return L.marker(wp.latLng, {
+                                icon: L.divIcon({
+                                    className: 'end-marker',
+                                    html: '<div style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 12px;">END</div>',
+                                    iconSize: [60, 30]
+                                })
+                            }).bindPopup('End: ' + (path[path.length - 1].name || 'End'));
+                        }
+                        return null;
+                    },
+                    lineOptions: {
+                        styles: [{color: routeColor, weight: weight, opacity: 0.8}]
+                    },
+                    show: false,
+                    addWaypoints: false,
+                    fitSelectedRoutes: true,
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'http://router.project-osrm.org/route/v1'
+                    })
+                }).addTo(maps[mapId]);
+                
+                if (!routingControls[mapId]) routingControls[mapId] = [];
+                routingControls[mapId].push(routingControl);
+                layers[mapId].push(routingControl);
+                
+                maps[mapId].fitBounds(waypoints);
+                console.log('Using Leaflet Routing Machine for real road paths');
+                return;
+                
+            } catch (error) {
+                console.error('Leaflet Routing Machine failed, using polyline fallback:', error);
+                // Fallback: Use polyline
+                const latlngs = path.map(coord => [coord.lat, coord.lon]);
                 const polyline = L.polyline(latlngs, {color: color, weight: weight}).addTo(maps[mapId]);
                 layers[mapId].push(polyline);
-            }
-            
-            // Add markers
-            if (path.length > 0) {
-                const startIcon = L.divIcon({
-                    className: 'start-marker',
-                    html: '<div style="background: #27ae60; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold;">START</div>',
-                    iconSize: [60, 30]
-                });
-                const startMarker = L.marker([path[0].lat, path[0].lon], {icon: startIcon})
-                    .bindPopup('Start: ' + path[0].name)
-                    .addTo(maps[mapId]);
-                layers[mapId].push(startMarker);
                 
-                const endIcon = L.divIcon({
-                    className: 'end-marker',
-                    html: '<div style="background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold;">END</div>',
-                    iconSize: [60, 30]
-                });
-                const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon], {icon: endIcon})
-                    .bindPopup('End: ' + path[path.length - 1].name)
-                    .addTo(maps[mapId]);
-                layers[mapId].push(endMarker);
+                if (path.length > 0) {
+                    const startMarker = L.marker([path[0].lat, path[0].lon])
+                        .bindPopup('Start: ' + path[0].name)
+                        .addTo(maps[mapId]);
+                    layers[mapId].push(startMarker);
+                    
+                    const endMarker = L.marker([path[path.length - 1].lat, path[path.length - 1].lon])
+                        .bindPopup('End: ' + path[path.length - 1].name)
+                        .addTo(maps[mapId]);
+                    layers[mapId].push(endMarker);
+                }
+                
+                maps[mapId].fitBounds(latlngs);
             }
-            
-            maps[mapId].fitBounds(latlngs);
         }
         
         function updateHourDisplay(hour) {
@@ -767,9 +867,9 @@
                 const response2 = await fetch(`/api/route/time-dependent?from=${from}&to=${to}&departureHour=${time2}`);
                 const data2 = await response2.json();
                 
-                // Draw both routes
-                drawPath('td-map-compare1', data1.path, '#e74c3c', 4, data1.trafficInfo);
-                drawPath('td-map-compare2', data2.path, '#27ae60', 4, data2.trafficInfo);
+                // Draw both routes (separate maps, so clear each)
+                drawPath('td-map-compare1', data1.path, '#e74c3c', 4, data1.trafficInfo, true);
+                drawPath('td-map-compare2', data2.path, '#27ae60', 4, data2.trafficInfo, true);
                 
                 // Display results
                 displayComparisonResults(data1, data2, time1, time2);
@@ -925,22 +1025,67 @@
                 });
                 const data = await response.json();
                 
-                drawPath('ch-map', data.path, '#27ae60');
+                // Determine route color based on preferences
+                let routeColor = '#27ae60'; // Default green
+                if (prefs.highwayWeight > 1.0) {
+                    routeColor = '#3498db'; // Blue for avoiding highways (scenic route)
+                } else if (prefs.timeWeight > 1.5) {
+                    routeColor = '#e74c3c'; // Red for fastest route
+                }
+                
+                // Draw path with real road routing
+                console.log('CCH Route received with ' + data.path.length + ' waypoints');
+                drawPath('ch-map', data.path, routeColor, 5);
+                
+                // Calculate route length (approximate)
+                let routeLength = 0;
+                for (let i = 0; i < data.path.length - 1; i++) {
+                    const p1 = data.path[i];
+                    const p2 = data.path[i + 1];
+                    const lat1 = p1.lat * Math.PI / 180;
+                    const lat2 = p2.lat * Math.PI / 180;
+                    const dLat = (p2.lat - p1.lat) * Math.PI / 180;
+                    const dLon = (p2.lon - p1.lon) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                              Math.cos(lat1) * Math.cos(lat2) *
+                              Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    routeLength += 6371 * c; // Distance in km
+                }
                 
                 const resultsDiv = document.getElementById('ch-results');
                 resultsDiv.style.display = 'block';
                 resultsDiv.innerHTML = `
                     <h3>Customized Route (CCH)</h3>
                     <div class="route-info">
-                        <strong>Method:</strong> ${data.method}
+                        <strong>Method:</strong> ${data.method || 'CCH'}
                     </div>
                     <div class="route-info">
-                        <strong>Preferences Applied:</strong> Time=${prefs.timeWeight}, 
-                        Avoid Highways=${prefs.highwayWeight}, Prefer Scenic=${prefs.scenicWeight}
+                        <strong>Preferences Applied:</strong> Time=${prefs.timeWeight.toFixed(1)}, 
+                        Avoid Highways=${prefs.highwayWeight.toFixed(1)}, Prefer Scenic=${prefs.scenicWeight.toFixed(1)}
                     </div>
+                    <div class="route-info">
+                        <strong>Route Length:</strong> ${routeLength.toFixed(2)} km
+                        ${prefs.scenicWeight > 1.0 ? '<span style="color: #27ae60;"> (Scenic route - longer but more beautiful)</span>' : ''}
+                    </div>
+                    <div class="route-info">
+                        <strong>Route Points:</strong> ${data.path.length} waypoints (real road path)
+                    </div>
+                    ${prefs.scenicWeight > 1.0 ? `
+                    <div class="route-info" style="background: #e8f5e9; border-left: 4px solid #27ae60; margin-top: 10px;">
+                        <strong>🌲 Scenic Mode Active:</strong> Route is optimized for scenic views. 
+                        Higher scenic preference results in longer routes that avoid highways and prefer scenic paths.
+                    </div>
+                    ` : `
+                    <div class="route-info" style="background: #e8f4f8; border-left: 4px solid #3498db; margin-top: 10px;">
+                        <strong>ℹ️ Note:</strong> Route follows actual roads with turns and curves. 
+                        Increase "Prefer Scenic" slider to get longer, more scenic routes.
+                    </div>
+                    `}
                 `;
             } catch (error) {
                 console.error('Error:', error);
+                alert('Error loading customizable route. Please try again.');
             }
         }
         
@@ -958,7 +1103,8 @@
                 
                 const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12', '#9b59b6'];
                 data.forEach((poi, idx) => {
-                    drawPath('poi-map', poi.path, colors[idx % colors.length], 3);
+                    // Don't clear map for subsequent routes (multiple routes on same map)
+                    drawPath('poi-map', poi.path, colors[idx % colors.length], 3, null, idx === 0);
                 });
                 
                 const resultsDiv = document.getElementById('poi-results');
@@ -993,7 +1139,8 @@
                 
                 const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12'];
                 data.forEach((route, idx) => {
-                    drawPath('pareto-map', route.path, colors[idx % colors.length], 3);
+                    // Don't clear map for subsequent routes (multiple routes on same map)
+                    drawPath('pareto-map', route.path, colors[idx % colors.length], 3, null, idx === 0);
                 });
                 
                 const resultsDiv = document.getElementById('pareto-results');
@@ -1029,7 +1176,8 @@
                 
                 const colors = ['#e74c3c', '#3498db', '#27ae60', '#f39c12', '#9b59b6'];
                 data.forEach((path, idx) => {
-                    drawPath('ksp-map', path.path, colors[idx % colors.length], 3);
+                    // Don't clear map for subsequent routes (multiple routes on same map)
+                    drawPath('ksp-map', path.path, colors[idx % colors.length], 3, null, idx === 0);
                 });
                 
                 const resultsDiv = document.getElementById('ksp-results');

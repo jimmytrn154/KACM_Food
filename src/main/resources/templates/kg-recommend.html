@@ -390,20 +390,54 @@
         async function loadDiseases() {
             try {
                 const response = await fetch('/api/kg/diseases');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const diseases = await response.json();
+
+                if (!Array.isArray(diseases)) {
+                    throw new Error('Invalid response format: expected array');
+                }
 
                 const select = document.getElementById('diseases');
                 select.innerHTML = '';
-                diseases.forEach(disease => {
+                
+                if (diseases.length > 0) {
+                    diseases.forEach(disease => {
+                        if (disease && typeof disease === 'string') {
+                            const option = document.createElement('option');
+                            option.value = disease;
+                            option.textContent = disease;
+                            select.appendChild(option);
+                        }
+                    });
+                    console.log(`Loaded ${diseases.length} diseases from Knowledge Graph`);
+                } else {
+                    // Add default diseases if none found
+                    const defaults = ['Diabetes', 'Hypertension', 'Obesity', 'Heart Disease', 'High Cholesterol'];
+                    defaults.forEach(disease => {
+                        const option = document.createElement('option');
+                        option.value = disease;
+                        option.textContent = disease;
+                        select.appendChild(option);
+                    });
+                    console.log('No diseases found in graph, using defaults');
+                }
+            } catch (error) {
+                console.error('Error loading diseases:', error);
+                showError('Error loading diseases: ' + error.message + '. Using default diseases.');
+                
+                // Add default diseases on error
+                const select = document.getElementById('diseases');
+                const defaults = ['Diabetes', 'Hypertension', 'Obesity', 'Heart Disease', 'High Cholesterol'];
+                defaults.forEach(disease => {
                     const option = document.createElement('option');
                     option.value = disease;
                     option.textContent = disease;
                     select.appendChild(option);
                 });
-
-                alert(`Loaded ${diseases.length} diseases`);
-            } catch (error) {
-                showError('Error loading diseases: ' + error.message);
             }
         }
 
@@ -442,6 +476,24 @@
 
         // Load diseases on page load
         window.addEventListener('load', () => {
+            // Check connection status first
+            fetch('/api/kg/status')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.connected) {
+                        console.warn('Neo4j is not connected. Using default data.');
+                        showError('Neo4j is not connected. The system will use default data. ' +
+                                 'To enable full features, please: ' +
+                                 '1) Start local Neo4j, or 2) Configure Neo4j Cloud in application.properties, or ' +
+                                 '3) Click "Initialize Graph" if Neo4j is running.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error checking connection status:', err);
+                    showError('Unable to check Neo4j connection. Using default data.');
+                });
+            
+            // Load diseases (will use defaults if connection fails)
             loadDiseases();
         });
     </script>

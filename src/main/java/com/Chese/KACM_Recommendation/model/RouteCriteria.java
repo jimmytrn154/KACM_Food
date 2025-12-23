@@ -32,14 +32,30 @@ public class RouteCriteria {
     
     /**
      * Combine criteria into a single weighted cost
+     * When scenicWeight is high, routes become longer but more scenic
      */
     public double getWeightedCost(RoutingPreferences prefs) {
-        return travelTime * prefs.getTimeWeight()
+        double baseCost = travelTime * prefs.getTimeWeight()
              + highwayPenalty * prefs.getHighwayWeight()
-             - scenicScore * prefs.getScenicWeight()  // negative because higher is better
              - safetyScore * prefs.getSafetyWeight()
              + turnPenalty * prefs.getTurnWeight()
              + tollCost * prefs.getTollWeight();
+        
+        // Scenic routes: higher scenicWeight makes scenic edges much cheaper
+        // This encourages longer paths through scenic areas
+        double scenicBonus = scenicScore * prefs.getScenicWeight();
+        
+        // When scenicWeight is high (>1.0), heavily penalize highways and reward scenic paths
+        if (prefs.getScenicWeight() > 1.0) {
+            // Make highways very expensive (forces longer scenic routes)
+            double highwayMultiplier = 1.0 + (prefs.getScenicWeight() - 1.0) * 2.0;
+            baseCost += highwayPenalty * prefs.getHighwayWeight() * (highwayMultiplier - 1.0);
+            
+            // Make scenic paths much cheaper (encourages longer scenic routes)
+            scenicBonus *= 2.0; // Double the scenic bonus when preference is high
+        }
+        
+        return baseCost - scenicBonus; // Subtract scenic bonus (negative = lower cost)
     }
     
     public RouteCriteria add(RouteCriteria other) {
